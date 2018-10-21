@@ -52,6 +52,15 @@
   (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
 (add-hook 'org-mode-hook '(lambda () (setq fill-column 80)))
 (add-hook 'org-mode-hook 'turn-on-auto-fill)
+;; Make windmove work in org-mode:
+(setq org-disputed-keys '(([(shift up)] . [(meta p)])
+                          ([(shift down)] . [(meta n)])
+                          ([(shift left)] . [(meta -)])
+                          ([(shift right)] . [(meta +)])
+                          ([(meta return)] . [(control meta return)])
+                          ([(control shift right)] . [(meta shift +)])
+                          ([(control shift left)] . [(meta shift -)])))
+(setq org-replace-disputed-keys t)
 
 ;; Auto complete
 ;;(use-package auto-complete
