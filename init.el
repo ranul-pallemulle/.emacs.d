@@ -100,9 +100,9 @@
   (add-hook 'flycheck-mode-hook #'flycheck-irony-setup))
 
 ;; Themes
-(use-package exotica-theme
+(use-package monokai-theme
   :ensure t
-  :config (load-theme 'exotica  t))
+  :config (load-theme 'monokai  t))
 
 ;; Git porcelain
 (use-package magit
@@ -112,4 +112,9 @@
 ;; Misc
 (global-hl-line-mode t)
 (windmove-default-keybindings)
+(set-face-attribute 'default nil :font "Menlo-15")
+(setq mac-command-modifier 'meta) ;; make command function as alt key
 (scroll-bar-mode -1)
+
+(provide 'init)
+;;; init.el ends here
