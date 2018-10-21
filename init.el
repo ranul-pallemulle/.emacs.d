@@ -52,6 +52,11 @@
   (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
 (add-hook 'org-mode-hook '(lambda () (setq fill-column 80)))
 (add-hook 'org-mode-hook 'turn-on-auto-fill)
+;; Make windmove work in org-mode:
+(add-hook 'org-shiftup-final-hook 'windmove-up)
+(add-hook 'org-shiftleft-final-hook 'windmove-left)
+(add-hook 'org-shiftdown-final-hook 'windmove-down)
+(add-hook 'org-shiftright-final-hook 'windmove-right)
 
 ;; Auto complete
 ;;(use-package auto-complete
