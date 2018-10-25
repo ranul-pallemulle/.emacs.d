@@ -97,6 +97,14 @@
   :config
   (add-to-list 'company-backends 'company-c-headers))
 
+;; Python autocompletion
+(use-package company-jedi
+  :ensure t
+  :config
+  (defun jedi-python-mode-hook ()
+    (add-to-list 'company-backends 'company-jedi))
+  (add-hook 'python-mode-hook 'jedi-python-mode-hook))
+
 ;; Flycheck
 (use-package flycheck
   :ensure t
