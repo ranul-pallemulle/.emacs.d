@@ -11,7 +11,7 @@
     ("a24c5b3c12d147da6cef80938dca1223b7c7f70f2f382b26308eba014dc4833a" "0bff60fb779498e69ea705825a2ca1a5497a4fccef93bf3275705c2d27528f2f" "3f44e2d33b9deb2da947523e2169031d3707eec0426e78c7b8a646ef773a2077" "2540689fd0bc5d74c4682764ff6c94057ba8061a98be5dd21116bf7bf301acfb" "d8dc153c58354d612b2576fea87fe676a3a5d43bcc71170c62ddde4a1ad9e1fb" default)))
  '(package-selected-packages
    (quote
-    (flycheck-irony company-irony company flycheck afternoon-theme magit solarized-theme solarized color-theme auto-complete org-bullets which-key use-package try))))
+    (company-jedi exec-path-from-shell flycheck-irony company-irony company flycheck afternoon-theme magit solarized-theme solarized color-theme auto-complete org-bullets which-key use-package try))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -97,6 +97,14 @@
   :config
   (add-to-list 'company-backends 'company-c-headers))
 
+;; Python autocompletion
+(use-package company-jedi
+  :ensure t
+  :config
+  (defun jedi-python-mode-hook ()
+    (add-to-list 'company-backends 'company-jedi))
+  (add-hook 'python-mode-hook 'jedi-python-mode-hook))
+
 ;; Flycheck
 (use-package flycheck
   :ensure t
@@ -117,6 +125,13 @@
 (use-package magit
   :ensure t
   :bind (("C-x g" . magit-status)))
+
+;; Make emacs agree with shell on mac
+(use-package exec-path-from-shell
+  :ensure t
+  :config
+  (when (memq window-system '(mac ns x))
+  (exec-path-from-shell-initialize)))
 
 ;; Misc
 (global-hl-line-mode t)
