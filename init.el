@@ -130,5 +130,9 @@
 (global-hl-line-mode t)
 (windmove-default-keybindings)
 (scroll-bar-mode -1)
+
+;; c-mode
+(add-hook 'c-mode-hook 'electric-pair-mode)
+
 (provide 'init)
 ;;; init.el ends here
