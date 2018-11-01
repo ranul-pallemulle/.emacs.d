@@ -143,6 +143,5 @@
 ;; c-mode
 (add-hook 'c-mode-hook 'electric-pair-mode)
 
-
 (provide 'init)
 ;;; init.el ends here
