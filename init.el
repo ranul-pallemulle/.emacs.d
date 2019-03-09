@@ -12,7 +12,7 @@
     ("6b2636879127bf6124ce541b1b2824800afc49c6ccd65439d6eb987dbf200c36" "d2e9c7e31e574bf38f4b0fb927aaff20c1e5f92f72001102758005e53d77b8c9" "d1b4990bd599f5e2186c3f75769a2c5334063e9e541e37514942c27975700370" "ecba61c2239fbef776a72b65295b88e5534e458dfe3e6d7d9f9cb353448a569e" "93a0885d5f46d2aeac12bf6be1754faa7d5e28b27926b8aa812840fe7d0b7983" "151bde695af0b0e69c3846500f58d9a0ca8cb2d447da68d7fbf4154dcf818ebc" "fe666e5ac37c2dfcf80074e88b9252c71a22b6f5d2f566df9a7aa4f9bea55ef8" "43b219a31db8fddfdc8fdbfdbd97e3d64c09c1c9fdd5dff83f3ffc2ddb8f0ba0" "04589c18c2087cd6f12c01807eed0bdaa63983787025c209b89c779c61c3a4c4" "2540689fd0bc5d74c4682764ff6c94057ba8061a98be5dd21116bf7bf301acfb" "bffa9739ce0752a37d9b1eee78fc00ba159748f50dc328af4be661484848e476" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" "c74e83f8aa4c78a121b52146eadb792c9facc5b1f02c917e3dbb454fca931223" "3c83b3676d796422704082049fc38b6966bcad960f896669dfc21a7a37a748fa" "f0dc4ddca147f3c7b1c7397141b888562a48d9888f1595d69572db73be99a024" default)))
  '(package-selected-packages
    (quote
-    (latex-preview-pane auctex abyss-theme clues-theme oceanic-theme atom-one-dark-theme rainbow-delimiters yasnippet-snippets spaceline-all-the-icons which-key use-package try spaceline smart-mode-line-powerline-theme smart-mode-line-atom-one-dark-theme projectile org-bullets monokai-theme modern-cpp-font-lock magit gruvbox-theme flycheck-rtags flycheck-irony exotica-theme exec-path-from-shell doom-themes cpputils-cmake counsel-etags company-jedi company-irony company-c-headers cmake-ide))))
+    (clang-format rtags latex-preview-pane auctex abyss-theme clues-theme oceanic-theme atom-one-dark-theme rainbow-delimiters yasnippet-snippets spaceline-all-the-icons which-key use-package try spaceline smart-mode-line-powerline-theme smart-mode-line-atom-one-dark-theme projectile org-bullets monokai-theme modern-cpp-font-lock magit gruvbox-theme flycheck-rtags flycheck-irony exotica-theme exec-path-from-shell doom-themes cpputils-cmake counsel-etags company-jedi company-irony company-c-headers cmake-ide))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -65,15 +65,6 @@
 ;                          ([(control shift left)] . [(meta shift -)])))
 					;(setq org-replace-disputed-keys t)
 
-;; AucTex was compiled and installed separately
-(load "auctex.el" nil t t)
-(load "preview-latex.el" nil t t)
- 	
-(setq TeX-auto-save t)
-(setq TeX-parse-self t)
-(setq-default TeX-master nil)
-
-
 ;; Auto complete
 ;;(use-package auto-complete
 ;;  :ensure t
@@ -95,7 +86,8 @@
 (use-package company
   :ensure t
   :config
-  (add-hook 'after-init-hook 'global-company-mode))
+  (add-hook 'after-init-hook 'global-company-mode)
+  (add-hook 'org-mode-hook (lambda () (setq-local company-dabbrev-downcase nil)))) ;prevent auto lowercasing of completions
 
 ;; Company-irony
 (use-package company-irony
@@ -139,17 +131,17 @@
 (use-package yasnippet-snippets)
 
 ;; Themes
-(use-package gruvbox-theme
-  :ensure t
-  :config (load-theme 'gruvbox-dark-soft  t))
-;(use-package doom-themes
-;  :ensure t
-;  :config
-;  (load-theme 'doom-one)
-;  (doom-themes-org-config))
-;(use-package exotica-theme
-;  :ensure t
-;  :config (load-theme 'exotica t))
+;; (use-package gruvbox-theme
+;;  :ensure t
+;;  :config (load-theme 'gruvbox-dark-soft  t))
+;; (use-package doom-themes
+;;   :ensure t
+;;   :config
+;;   (load-theme 'doom-one)
+;;   (doom-themes-org-config))
+;; (use-package exotica-theme
+;;  :ensure t
+;;  :config (load-theme 'exotica t))
 
 ;; smart-mode-line (now using spaceline instead)
 ;(use-package smart-mode-line
@@ -188,7 +180,7 @@
 (set-face-attribute 'spaceline-unmodified nil :background "#ed9442") ; LightSkyBlue
 (set-face-attribute 'spaceline-modified nil :background "#ef6034") ; #f7e165
 
-;; Git porcelain
+;; Magit
 (use-package magit
   :ensure t
   :bind (("C-x g" . magit-status)))
@@ -216,21 +208,23 @@
   (add-hook 'emacs-lisp-mode-hook 'rainbow-delimiters-mode))
 
 ;; RTags (for cmake ide), needs external daemon
-;(use-package rtags
-;  :ensure t
-;  :config
-;  (progn
-;    (setq rtags-path "/Users/ranulpallemulle/Downloads/rtags/bin")
-;    (setq rtags-autostart-diagnostics t)
-;    (setq rtags-completions-enabled t)
-;    (rtags-enable-standard-keybindings)
-;    (push 'company-rtags company-backends)
-;    (add-hook 'c-mode-hook 'rtags-start-process-unless-running)
-;    (add-hook 'c++-mode-hook 'rtags-start-process-unless-running)
-;    (add-hook 'objc-mode-hook 'rtags-start-process-unless-running)
+(use-package rtags
+  :ensure t
+  :config
+  (progn
+    (setq rtags-path "/usr/local/bin/")
+    (setq rtags-autostart-diagnostics t)
+    (setq rtags-completions-enabled t)
+    (rtags-enable-standard-keybindings)
+    (push 'company-rtags company-backends)
+    (add-hook 'c-mode-hook 'rtags-start-process-unless-running)
+    (add-hook 'c++-mode-hook 'rtags-start-process-unless-running)
+    (add-hook 'objc-mode-hook 'rtags-start-process-unless-running)
     ;;
-;    (define-key c-mode-base-map (kbd "M-.") (function rtags-find-symbol-at-point))
-;    (define-key c-mode-base-map (kbd "M-,") (function rtags-find-references-at-point))))
+    (define-key c-mode-base-map (kbd "M-.") (function rtags-find-symbol-at-point))
+    (define-key c-mode-base-map (kbd "M-,") (function rtags-find-references-at-point))
+    (define-key c-mode-base-map (kbd "M-*") (function rtags-location-stack-back))
+    (define-key c-mode-base-map (kbd "M-(") (function rtags-location-stack-forward))))
 
 ;; cmake-ide
 ;(use-package cmake-ide
@@ -246,20 +240,21 @@
 ;(use-package flycheck-rtags
 ;  :ensure t)
 
+;(require 'flycheck-rtags)
 ;(defun my-flycheck-rtags-setup ()
 ;  "RTags setup for c/c++/java."
 ;  (flycheck-select-checker 'rtags)
 ;  (setq-local flycheck-highlighting-mode nil)
-;  (setq-local flycheck-check-syntax-automatically nil))
+					;  (setq-local flycheck-check-syntax-automatically nil))
 ;(add-hook 'c-mode-hook #'my-flycheck-rtags-setup)
 ;(add-hook 'c++-mode-hook #'my-flycheck-rtags-setup)
 
 ;; counsel-etags with universal-ctags as backend (replacing rtags)
-(use-package counsel-etags
-  :ensure t
-  :config
-  (require 'cc-mode)
-  (define-key c-mode-base-map (kbd "C-c r") 'counsel-etags-find-tag-at-point))
+;(use-package counsel-etags
+;  :ensure t
+;  :config
+;  (require 'cc-mode)
+;  (define-key c-mode-base-map (kbd "C-c r") 'counsel-etags-find-tag-at-point))
 
 ;; modern-cpp-font-lock for modern c++ highlighting
 (use-package modern-cpp-font-lock
@@ -280,27 +275,41 @@
 ;; windmove
 ;;(windmove-default-keybindings) ;; not using these anymore
 (global-set-key (kbd "s-w") 'windmove-up)
-(global-set-key (kbd "s-s") 'windmove-down)
+(global-set-key (kbd "s-f") 'windmove-down)
 (global-set-key (kbd "s-a") 'windmove-left)
 (global-set-key (kbd "s-d") 'windmove-right)
+; make AltGr on Thinkpad + WASD keys do the same
+(global-set-key (kbd "ł") (lookup-key global-map (kbd "s-w")))
+(global-set-key (kbd "ß") (lookup-key global-map (kbd "s-f")))
+(global-set-key (kbd "æ") (lookup-key global-map (kbd "s-a")))
+(global-set-key (kbd "ð") (lookup-key global-map (kbd "s-d")))
+
+(global-set-key (kbd "đ") 'forward-word)
+(global-set-key (kbd "”") 'backward-word)
+
+;; clang-format
+(use-package clang-format
+  :ensure t
+  :config
+  (global-set-key [C-M-tab] 'clang-format-region))
 
 ;; Python
-(setq python-shell-interpreter "python3")
+;(setq python-shell-interpreter "python")
 
 ;; Misc
 (global-hl-line-mode t)
-(set-face-attribute 'default nil :font "Monaco-15") ; Menlo-15 is nice too
+(set-face-attribute 'default nil :font "inconsolata-15") ; Menlo-15 is nice too
 ;;(setq mac-command-modifier 'meta) ; make command function as alt key
 (scroll-bar-mode -1)
 (global-display-line-numbers-mode)
 (add-hook 'org-mode-hook (lambda() (display-line-numbers-mode -1)))
 (column-number-mode t)
 (add-hook 'c-mode-common-hook 'auto-fill-mode)
-(unless (display-graphic-p)
-  (menu-bar-mode -1))
+(menu-bar-mode -1)
 (global-set-key (kbd "M-<backspace>") 'delete-forward-char)
 (add-hook 'eww-mode-hook (lambda()(
 				   define-key eww-mode-map (kbd "M-c") 'eww-toggle-colors)))
+(global-set-key (kbd "C-t") (lookup-key global-map (kbd "C-x 5")))
 
 ;; open init.el by "M-x init"
 (defun init ()
