@@ -336,5 +336,8 @@
   )
 (global-set-key (kbd "C-`") 'my-toggle-inferior-shell)
 
+;; quick compile
+(define-key c-mode-base-map (kdb "M-c") 'compile)
+
 (provide 'init)
 ;;; init.el ends here
