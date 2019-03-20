@@ -9,10 +9,10 @@
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes
    (quote
-    ("6b2636879127bf6124ce541b1b2824800afc49c6ccd65439d6eb987dbf200c36" "d2e9c7e31e574bf38f4b0fb927aaff20c1e5f92f72001102758005e53d77b8c9" "d1b4990bd599f5e2186c3f75769a2c5334063e9e541e37514942c27975700370" "ecba61c2239fbef776a72b65295b88e5534e458dfe3e6d7d9f9cb353448a569e" "93a0885d5f46d2aeac12bf6be1754faa7d5e28b27926b8aa812840fe7d0b7983" "151bde695af0b0e69c3846500f58d9a0ca8cb2d447da68d7fbf4154dcf818ebc" "fe666e5ac37c2dfcf80074e88b9252c71a22b6f5d2f566df9a7aa4f9bea55ef8" "43b219a31db8fddfdc8fdbfdbd97e3d64c09c1c9fdd5dff83f3ffc2ddb8f0ba0" "04589c18c2087cd6f12c01807eed0bdaa63983787025c209b89c779c61c3a4c4" "2540689fd0bc5d74c4682764ff6c94057ba8061a98be5dd21116bf7bf301acfb" "bffa9739ce0752a37d9b1eee78fc00ba159748f50dc328af4be661484848e476" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" "c74e83f8aa4c78a121b52146eadb792c9facc5b1f02c917e3dbb454fca931223" "3c83b3676d796422704082049fc38b6966bcad960f896669dfc21a7a37a748fa" "f0dc4ddca147f3c7b1c7397141b888562a48d9888f1595d69572db73be99a024" default)))
+    ("a3fa4abaf08cc169b61dea8f6df1bbe4123ec1d2afeb01c17e11fdc31fc66379" "6b289bab28a7e511f9c54496be647dc60f5bd8f9917c9495978762b99d8c96a0" "fd3c7bd752f48dcb7efa5f852ef858c425b1c397b73851ff8816c0580eab92f1" "0bff60fb779498e69ea705825a2ca1a5497a4fccef93bf3275705c2d27528f2f" "cd736a63aa586be066d5a1f0e51179239fe70e16a9f18991f6f5d99732cabb32" "6b2636879127bf6124ce541b1b2824800afc49c6ccd65439d6eb987dbf200c36" "d2e9c7e31e574bf38f4b0fb927aaff20c1e5f92f72001102758005e53d77b8c9" "d1b4990bd599f5e2186c3f75769a2c5334063e9e541e37514942c27975700370" "ecba61c2239fbef776a72b65295b88e5534e458dfe3e6d7d9f9cb353448a569e" "93a0885d5f46d2aeac12bf6be1754faa7d5e28b27926b8aa812840fe7d0b7983" "151bde695af0b0e69c3846500f58d9a0ca8cb2d447da68d7fbf4154dcf818ebc" "fe666e5ac37c2dfcf80074e88b9252c71a22b6f5d2f566df9a7aa4f9bea55ef8" "43b219a31db8fddfdc8fdbfdbd97e3d64c09c1c9fdd5dff83f3ffc2ddb8f0ba0" "04589c18c2087cd6f12c01807eed0bdaa63983787025c209b89c779c61c3a4c4" "2540689fd0bc5d74c4682764ff6c94057ba8061a98be5dd21116bf7bf301acfb" "bffa9739ce0752a37d9b1eee78fc00ba159748f50dc328af4be661484848e476" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" "c74e83f8aa4c78a121b52146eadb792c9facc5b1f02c917e3dbb454fca931223" "3c83b3676d796422704082049fc38b6966bcad960f896669dfc21a7a37a748fa" "f0dc4ddca147f3c7b1c7397141b888562a48d9888f1595d69572db73be99a024" default)))
  '(package-selected-packages
    (quote
-    (clang-format rtags latex-preview-pane auctex abyss-theme clues-theme oceanic-theme atom-one-dark-theme rainbow-delimiters yasnippet-snippets spaceline-all-the-icons which-key use-package try spaceline smart-mode-line-powerline-theme smart-mode-line-atom-one-dark-theme projectile org-bullets monokai-theme modern-cpp-font-lock magit gruvbox-theme flycheck-rtags flycheck-irony exotica-theme exec-path-from-shell doom-themes cpputils-cmake counsel-etags company-jedi company-irony company-c-headers cmake-ide))))
+    (multi-term clang-format rtags latex-preview-pane auctex abyss-theme clues-theme oceanic-theme atom-one-dark-theme rainbow-delimiters yasnippet-snippets spaceline-all-the-icons which-key use-package try spaceline smart-mode-line-powerline-theme smart-mode-line-atom-one-dark-theme projectile org-bullets monokai-theme modern-cpp-font-lock magit gruvbox-theme flycheck-rtags flycheck-irony exotica-theme exec-path-from-shell doom-themes cpputils-cmake counsel-etags company-jedi company-irony company-c-headers cmake-ide))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -131,14 +131,15 @@
 (use-package yasnippet-snippets)
 
 ;; Themes
+;;(load-theme 'tango)
 ;; (use-package gruvbox-theme
 ;;  :ensure t
 ;;  :config (load-theme 'gruvbox-dark-soft  t))
-;; (use-package doom-themes
-;;   :ensure t
-;;   :config
-;;   (load-theme 'doom-one)
-;;   (doom-themes-org-config))
+(use-package doom-themes
+  :ensure t
+  :config
+  (load-theme 'doom-one)
+  (doom-themes-org-config))
 ;; (use-package exotica-theme
 ;;  :ensure t
 ;;  :config (load-theme 'exotica t))
@@ -296,6 +297,12 @@
 ;; Python
 ;(setq python-shell-interpreter "python")
 
+;; Multi-term
+(use-package multi-term
+  :ensure t
+  :config
+  (setq multi-term-program "/usr/bin/bash"))
+
 ;; Misc
 (global-hl-line-mode t)
 (set-face-attribute 'default nil :font "inconsolata-15") ; Menlo-15 is nice too
@@ -337,7 +344,13 @@
 (global-set-key (kbd "C-`") 'my-toggle-inferior-shell)
 
 ;; quick compile
-(define-key c-mode-base-map (kdb "M-c") 'compile)
+(define-key c-mode-base-map (kbd "M-c") 'compile)
+
+;; prevent shell scroll back after clearing screen (C-l C-l)
+(add-hook 'comint-mode-hook
+	  (defun rm-comint-postoutput-scroll-to-bottom ()
+	    (remove-hook 'comint-output-filter-functions
+			 'comint-postoutput-scroll-to-bottom)))
 
 (provide 'init)
 ;;; init.el ends here
