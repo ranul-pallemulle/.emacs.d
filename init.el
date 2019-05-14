@@ -12,7 +12,7 @@
     ("a3fa4abaf08cc169b61dea8f6df1bbe4123ec1d2afeb01c17e11fdc31fc66379" "6b289bab28a7e511f9c54496be647dc60f5bd8f9917c9495978762b99d8c96a0" "fd3c7bd752f48dcb7efa5f852ef858c425b1c397b73851ff8816c0580eab92f1" "0bff60fb779498e69ea705825a2ca1a5497a4fccef93bf3275705c2d27528f2f" "cd736a63aa586be066d5a1f0e51179239fe70e16a9f18991f6f5d99732cabb32" "6b2636879127bf6124ce541b1b2824800afc49c6ccd65439d6eb987dbf200c36" "d2e9c7e31e574bf38f4b0fb927aaff20c1e5f92f72001102758005e53d77b8c9" "d1b4990bd599f5e2186c3f75769a2c5334063e9e541e37514942c27975700370" "ecba61c2239fbef776a72b65295b88e5534e458dfe3e6d7d9f9cb353448a569e" "93a0885d5f46d2aeac12bf6be1754faa7d5e28b27926b8aa812840fe7d0b7983" "151bde695af0b0e69c3846500f58d9a0ca8cb2d447da68d7fbf4154dcf818ebc" "fe666e5ac37c2dfcf80074e88b9252c71a22b6f5d2f566df9a7aa4f9bea55ef8" "43b219a31db8fddfdc8fdbfdbd97e3d64c09c1c9fdd5dff83f3ffc2ddb8f0ba0" "04589c18c2087cd6f12c01807eed0bdaa63983787025c209b89c779c61c3a4c4" "2540689fd0bc5d74c4682764ff6c94057ba8061a98be5dd21116bf7bf301acfb" "bffa9739ce0752a37d9b1eee78fc00ba159748f50dc328af4be661484848e476" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" "c74e83f8aa4c78a121b52146eadb792c9facc5b1f02c917e3dbb454fca931223" "3c83b3676d796422704082049fc38b6966bcad960f896669dfc21a7a37a748fa" "f0dc4ddca147f3c7b1c7397141b888562a48d9888f1595d69572db73be99a024" default)))
  '(package-selected-packages
    (quote
-    (multi-term clang-format rtags latex-preview-pane auctex abyss-theme clues-theme oceanic-theme atom-one-dark-theme rainbow-delimiters yasnippet-snippets spaceline-all-the-icons which-key use-package try spaceline smart-mode-line-powerline-theme smart-mode-line-atom-one-dark-theme projectile org-bullets monokai-theme modern-cpp-font-lock magit gruvbox-theme flycheck-rtags flycheck-irony exotica-theme exec-path-from-shell doom-themes cpputils-cmake counsel-etags company-jedi company-irony company-c-headers cmake-ide))))
+    (cmake-mode diff-hl treemacs-magit treemacs-icons-dired treemacs-projectile treemacs multi-term clang-format rtags latex-preview-pane auctex abyss-theme clues-theme oceanic-theme atom-one-dark-theme rainbow-delimiters yasnippet-snippets spaceline-all-the-icons which-key use-package try spaceline smart-mode-line-powerline-theme smart-mode-line-atom-one-dark-theme projectile org-bullets monokai-theme modern-cpp-font-lock magit gruvbox-theme flycheck-rtags flycheck-irony exotica-theme exec-path-from-shell doom-themes cpputils-cmake counsel-etags company-jedi company-irony company-c-headers cmake-ide))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -53,17 +53,17 @@
   :ensure t
   :config
   (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
-(add-hook 'org-mode-hook '(lambda () (setq fill-column 80)))
+(add-hook 'org-mode-hook '(lambda () (setq fill-column 65)))
 (add-hook 'org-mode-hook 'turn-on-auto-fill)
 ;; Make windmove work in org-mode:
-;(setq org-disputed-keys '(([(shift up)] . [(meta p)])
-;                          ([(shift down)] . [(meta n)])
-;                          ([(shift left)] . [(meta -)])
-;                          ([(shift right)] . [(meta +)])
-;                          ([(meta return)] . [(control meta return)])
-;                          ([(control shift right)] . [(meta shift +)])
-;                          ([(control shift left)] . [(meta shift -)])))
-					;(setq org-replace-disputed-keys t)
+(setq org-disputed-keys '(([(shift up)] . [(meta p)])
+                         ([(shift down)] . [(meta n)])
+                         ([(shift left)] . [(meta -)])
+                         ([(shift right)] . [(meta +)])
+                         ([(meta return)] . [(control meta return)])
+                         ([(control shift right)] . [(meta shift +)])
+                         ([(control shift left)] . [(meta shift -)])))
+(setq org-replace-disputed-keys t)
 
 ;; Auto complete
 ;;(use-package auto-complete
@@ -114,8 +114,10 @@
   :ensure t
   :config
   (global-flycheck-mode t)
-  (add-hook 'c++-mode-hook (lambda () (setq flycheck-clang-language-standard "c++11")))
-  (add-hook 'c++-mode-hook (lambda () (setq flycheck-clang-args "-O2"))))
+  (add-hook 'c++-mode-hook (lambda () (setq flycheck-checker 'c/c++-gcc)))
+  (add-hook 'c++-mode-hook (lambda () (setq flycheck-gcc-language-standard "c++11")))
+  ;; (add-hook 'c++-mode-hook (lambda () (setq flycheck-gcc-args "-trigraphs")))
+  )
 
 ;; Flycheck-irony
 (use-package flycheck-irony
@@ -130,6 +132,95 @@
   (yas-global-mode 1))
 (use-package yasnippet-snippets)
 
+(use-package rust-mode
+  :ensure t
+  :config
+  (add-to-list 'auto-mode-alist '("\\.rs\\'" . rust-mode)))
+
+;; markdown
+(use-package flymd
+  :ensure t)
+
+(use-package treemacs
+  :ensure t
+  :defer t
+  :init
+  (with-eval-after-load 'winum
+    (define-key winum-keymap (kbd "M-0") #'treemacs))
+  :config
+  (progn
+    (setq treemacs-collapse-dirs                 (if (executable-find "python3") 3 0)
+          treemacs-deferred-git-apply-delay      0.5
+          treemacs-display-in-side-window        t
+          treemacs-eldoc-display                 t
+          treemacs-file-event-delay              5000
+          treemacs-file-follow-delay             0.2
+          treemacs-follow-after-init             t
+          treemacs-git-command-pipe              ""
+          treemacs-goto-tag-strategy             'refetch-index
+          treemacs-indentation                   2
+          treemacs-indentation-string            " "
+          treemacs-is-never-other-window         nil
+          treemacs-max-git-entries               5000
+          treemacs-missing-project-action        'ask
+          treemacs-no-png-images                 nil
+          treemacs-no-delete-other-windows       t
+          treemacs-project-follow-cleanup        nil
+          treemacs-persist-file                  (expand-file-name ".cache/treemacs-persist" user-emacs-directory)
+          treemacs-recenter-distance             0.1
+          treemacs-recenter-after-file-follow    nil
+          treemacs-recenter-after-tag-follow     nil
+          treemacs-recenter-after-project-jump   'always
+          treemacs-recenter-after-project-expand 'on-distance
+          treemacs-show-cursor                   nil
+          treemacs-show-hidden-files             t
+          treemacs-silent-filewatch              nil
+          treemacs-silent-refresh                nil
+          treemacs-sorting                       'alphabetic-desc
+          treemacs-space-between-root-nodes      t
+          treemacs-tag-follow-cleanup            t
+          treemacs-tag-follow-delay              1.5
+          treemacs-width                         35)
+
+
+    ;; The default width and height of the icons is 22 pixels. If you are
+    ;; using a Hi-DPI display, uncomment this to double the icon size.
+    ;; (treemacs-resize-icons 44)
+
+    (treemacs-follow-mode t)
+    (treemacs-filewatch-mode t)
+    (treemacs-fringe-indicator-mode t)
+    (pcase (cons (not (null (executable-find "git")))
+                 (not (null (executable-find "python3"))))
+      (`(t . t)
+       (treemacs-git-mode 'deferred))
+      (`(t . _)
+       (treemacs-git-mode 'simple))))
+  :bind
+  (:map global-map
+        ("M-0"       . treemacs)
+        ("C-x t 1"   . treemacs-delete-other-windows)
+        ("C-x t t"   . treemacs)
+        ("C-x t B"   . treemacs-bookmark)
+        ("C-x t C-t" . treemacs-find-file)
+        ("C-x t M-t" . treemacs-find-tag)))
+
+(use-package treemacs-projectile
+  :after treemacs projectile
+  :ensure t)
+
+;; (use-package treemacs-icons-dired
+;;   :after treemacs dired
+;;   :ensure t
+;;   :config (treemacs-icons-dired-mode))
+
+(use-package treemacs-magit
+  :after treemacs magit
+  :ensure t)
+
+(use-package all-the-icons
+  :ensure t)
+
 ;; Themes
 ;;(load-theme 'tango)
 ;; (use-package gruvbox-theme
@@ -138,8 +229,12 @@
 (use-package doom-themes
   :ensure t
   :config
-  (load-theme 'doom-one)
-  (doom-themes-org-config))
+  (load-theme 'doom-vibrant t)
+  (doom-themes-org-config)
+  (setq doom-themes-enable-bold t
+	doom-themes-enable-italic t)
+  (doom-themes-treemacs-config))
+
 ;; (use-package exotica-theme
 ;;  :ensure t
 ;;  :config (load-theme 'exotica t))
@@ -186,6 +281,12 @@
   :ensure t
   :bind (("C-x g" . magit-status)))
 
+;; diff-hl - for highlighting uncommited changes
+(use-package diff-hl
+  :ensure t
+  :config
+  (global-diff-hl-mode t))
+
 ;; Make emacs agree with shell on mac
 (use-package exec-path-from-shell
   :ensure t
@@ -194,11 +295,11 @@
   (exec-path-from-shell-initialize)))
 
 ;; Projectile
-(use-package projectile
-  :ensure t
-  :config
-  (projectile-mode +1)
-  (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map))
+;; (use-package projectile
+;;   :ensure t
+;;   :config
+;;   (projectile-mode +1)
+;;   (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map))
 
 ;; rainbow-delimiters
 (use-package rainbow-delimiters
@@ -224,31 +325,37 @@
     ;;
     (define-key c-mode-base-map (kbd "M-.") (function rtags-find-symbol-at-point))
     (define-key c-mode-base-map (kbd "M-,") (function rtags-find-references-at-point))
-    (define-key c-mode-base-map (kbd "M-*") (function rtags-location-stack-back))
-    (define-key c-mode-base-map (kbd "M-(") (function rtags-location-stack-forward))))
+    (define-key c-mode-base-map (kbd "M-(") (function rtags-location-stack-back))
+    ;; (define-key c-mode-base-map (kbd "M-)") (function rtags-location-stack-forward))
+    (define-key c-mode-base-map (kbd "M-)") (function rtags-find-symbol-at-point))
+    (define-key c-mode-base-map (kbd "<C-tab>") (function company-complete))))
 
-;; cmake-ide
-;(use-package cmake-ide
-;  :ensure t
-;  :config
-;  (progn
-;    (require 'rtags)
-;    (cmake-ide-setup)
-;    (setq cmake-ide-build-pool-use-persistent-naming t)
-;    (setq cmake-ide-flags-c++ (append '("-std=c++11")))))
 
 ;; Flycheck-rtags
-;(use-package flycheck-rtags
-;  :ensure t)
+(use-package flycheck-rtags
+ :ensure t)
 
-;(require 'flycheck-rtags)
-;(defun my-flycheck-rtags-setup ()
-;  "RTags setup for c/c++/java."
-;  (flycheck-select-checker 'rtags)
-;  (setq-local flycheck-highlighting-mode nil)
-					;  (setq-local flycheck-check-syntax-automatically nil))
-;(add-hook 'c-mode-hook #'my-flycheck-rtags-setup)
-;(add-hook 'c++-mode-hook #'my-flycheck-rtags-setup)
+(require 'flycheck-rtags)
+(defun use-rtags ()
+  "RTags setup for c/c++/java."
+  (interactive)
+ (flycheck-select-checker 'rtags)
+ (setq-local flycheck-highlighting-mode nil)
+ (setq-local flycheck-check-syntax-automatically nil)
+ (rtags-start-process-unless-running))
+;; (add-hook 'c-mode-hook #'use-rtags)
+;; (add-hook 'c++-mode-hook #'use-rtags)
+
+
+;; cmake-ide
+(use-package cmake-ide
+ :ensure t
+ :config
+ (progn
+   (require 'rtags)
+   (cmake-ide-setup)))
+;    (setq cmake-ide-build-pool-use-persistent-naming t)
+;    (setq cmake-ide-flags-c++ (append '("-std=c++11")))))
 
 ;; counsel-etags with universal-ctags as backend (replacing rtags)
 ;(use-package counsel-etags
@@ -274,7 +381,7 @@
 (setq c-basic-offset 4)
 
 ;; windmove
-;;(windmove-default-keybindings) ;; not using these anymore
+(windmove-default-keybindings) ;; use shift keys
 (global-set-key (kbd "s-w") 'windmove-up)
 (global-set-key (kbd "s-f") 'windmove-down)
 (global-set-key (kbd "s-a") 'windmove-left)
@@ -294,6 +401,9 @@
   :config
   (global-set-key [C-M-tab] 'clang-format-region))
 
+(use-package cmake-mode
+  :ensure t)
+
 ;; Python
 ;(setq python-shell-interpreter "python")
 
@@ -304,9 +414,8 @@
   (setq multi-term-program "/usr/bin/bash"))
 
 ;; Misc
-(global-hl-line-mode t)
+;; (global-hl-line-mode t)
 (set-face-attribute 'default nil :font "inconsolata-15") ; Menlo-15 is nice too
-;;(setq mac-command-modifier 'meta) ; make command function as alt key
 (scroll-bar-mode -1)
 (global-display-line-numbers-mode)
 (add-hook 'org-mode-hook (lambda() (display-line-numbers-mode -1)))
@@ -317,6 +426,16 @@
 (add-hook 'eww-mode-hook (lambda()(
 				   define-key eww-mode-map (kbd "M-c") 'eww-toggle-colors)))
 (global-set-key (kbd "C-t") (lookup-key global-map (kbd "C-x 5")))
+
+
+(setq ring-bell-function		;flash the modeline instead of bell
+      (lambda ()
+        (let ((orig-fg (face-foreground 'mode-line)))
+          (set-face-foreground 'mode-line "#F2804F")
+          (run-with-idle-timer 0.1 nil
+                               (lambda (fg) (set-face-foreground 'mode-line fg))
+                               orig-fg))))
+(setq visible-bell 1)			;prevent audible bell
 
 ;; open init.el by "M-x init"
 (defun init ()
@@ -351,6 +470,16 @@
 	  (defun rm-comint-postoutput-scroll-to-bottom ()
 	    (remove-hook 'comint-output-filter-functions
 			 'comint-postoutput-scroll-to-bottom)))
+
+;; for server mode, use the same font
+(add-to-list 'default-frame-alist '(font . "inconsolata-15"))
+(add-to-list 'default-frame-alist '(scroll-bar-mode -1))
+
+;; TRAMP
+(setq tramp-verbose 6)
+
+;; ;; mouse autofocus window on hover
+;; (setq mouse-autoselect-window t)
 
 (provide 'init)
 ;;; init.el ends here
