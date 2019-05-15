@@ -1,27 +1,6 @@
 ;;; package --- Summary:
 ;;; Commentary:
 ;;; Code:
-
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(custom-safe-themes
-   (quote
-    ("a3fa4abaf08cc169b61dea8f6df1bbe4123ec1d2afeb01c17e11fdc31fc66379" "6b289bab28a7e511f9c54496be647dc60f5bd8f9917c9495978762b99d8c96a0" "fd3c7bd752f48dcb7efa5f852ef858c425b1c397b73851ff8816c0580eab92f1" "0bff60fb779498e69ea705825a2ca1a5497a4fccef93bf3275705c2d27528f2f" "cd736a63aa586be066d5a1f0e51179239fe70e16a9f18991f6f5d99732cabb32" "6b2636879127bf6124ce541b1b2824800afc49c6ccd65439d6eb987dbf200c36" "d2e9c7e31e574bf38f4b0fb927aaff20c1e5f92f72001102758005e53d77b8c9" "d1b4990bd599f5e2186c3f75769a2c5334063e9e541e37514942c27975700370" "ecba61c2239fbef776a72b65295b88e5534e458dfe3e6d7d9f9cb353448a569e" "93a0885d5f46d2aeac12bf6be1754faa7d5e28b27926b8aa812840fe7d0b7983" "151bde695af0b0e69c3846500f58d9a0ca8cb2d447da68d7fbf4154dcf818ebc" "fe666e5ac37c2dfcf80074e88b9252c71a22b6f5d2f566df9a7aa4f9bea55ef8" "43b219a31db8fddfdc8fdbfdbd97e3d64c09c1c9fdd5dff83f3ffc2ddb8f0ba0" "04589c18c2087cd6f12c01807eed0bdaa63983787025c209b89c779c61c3a4c4" "2540689fd0bc5d74c4682764ff6c94057ba8061a98be5dd21116bf7bf301acfb" "bffa9739ce0752a37d9b1eee78fc00ba159748f50dc328af4be661484848e476" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" "c74e83f8aa4c78a121b52146eadb792c9facc5b1f02c917e3dbb454fca931223" "3c83b3676d796422704082049fc38b6966bcad960f896669dfc21a7a37a748fa" "f0dc4ddca147f3c7b1c7397141b888562a48d9888f1595d69572db73be99a024" default)))
- '(package-selected-packages
-   (quote
-    (framemove cmake-mode diff-hl treemacs-magit treemacs-icons-dired treemacs-projectile treemacs multi-term clang-format rtags latex-preview-pane auctex abyss-theme clues-theme oceanic-theme atom-one-dark-theme rainbow-delimiters yasnippet-snippets spaceline-all-the-icons which-key use-package try spaceline smart-mode-line-powerline-theme smart-mode-line-atom-one-dark-theme projectile org-bullets monokai-theme modern-cpp-font-lock magit gruvbox-theme flycheck-rtags flycheck-irony exotica-theme exec-path-from-shell doom-themes cpputils-cmake counsel-etags company-jedi company-irony company-c-headers cmake-ide))))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
-
-
-
 (setq inhibit-startup-message t)
 (tool-bar-mode -1)
 
@@ -65,15 +44,6 @@
                          ([(control shift left)] . [(meta shift -)])))
 (setq org-replace-disputed-keys t)
 
-;; Auto complete
-;;(use-package auto-complete
-;;  :ensure t
-;;  :init
-;;  (progn
-;;    (ac-config-default)
-;;    (global-auto-complete-mode t)
-;;    ))
-
 ;; Irony mode
 (use-package irony
   :ensure t
@@ -115,9 +85,7 @@
   :config
   (global-flycheck-mode t)
   (add-hook 'c++-mode-hook (lambda () (setq flycheck-checker 'c/c++-gcc)))
-  (add-hook 'c++-mode-hook (lambda () (setq flycheck-gcc-language-standard "c++11")))
-  ;; (add-hook 'c++-mode-hook (lambda () (setq flycheck-gcc-args "-trigraphs")))
-  )
+  (add-hook 'c++-mode-hook (lambda () (setq flycheck-gcc-language-standard "c++11"))))
 
 ;; Flycheck-irony
 (use-package flycheck-irony
@@ -180,7 +148,7 @@
           treemacs-space-between-root-nodes      t
           treemacs-tag-follow-cleanup            t
           treemacs-tag-follow-delay              1.5
-          treemacs-width                         35)
+          treemacs-width                         28)
 
 
     ;; The default width and height of the icons is 22 pixels. If you are
@@ -205,14 +173,10 @@
         ("C-x t C-t" . treemacs-find-file)
         ("C-x t M-t" . treemacs-find-tag)))
 
-(use-package treemacs-projectile
-  :after treemacs projectile
-  :ensure t)
-
-;; (use-package treemacs-icons-dired
-;;   :after treemacs dired
-;;   :ensure t
-;;   :config (treemacs-icons-dired-mode))
+(with-eval-after-load 'treemacs
+(set-face-attribute 'treemacs-directory-face nil :font "inconsolata-16")
+(set-face-attribute 'treemacs-file-face nil :font "inconsolata-12")
+(set-face-attribute 'treemacs-root-face nil :font "inconsolata-16"))
 
 (use-package treemacs-magit
   :after treemacs magit
@@ -222,10 +186,6 @@
   :ensure t)
 
 ;; Themes
-;;(load-theme 'tango)
-;; (use-package gruvbox-theme
-;;  :ensure t
-;;  :config (load-theme 'gruvbox-dark-soft  t))
 (use-package doom-themes
   :ensure t
   :config
@@ -235,43 +195,21 @@
 	doom-themes-enable-italic t)
   (doom-themes-treemacs-config))
 
-;; (use-package exotica-theme
-;;  :ensure t
-;;  :config (load-theme 'exotica t))
-
-;; smart-mode-line (now using spaceline instead)
-;(use-package smart-mode-line
-;  :ensure t
-;  :config
-;  (sml/setup)
-;  (sml/apply-theme 'respectful))
-;(set-face-attribute 'mode-line-buffer-id nil :background "#65d5f7" :foreground "black")
-
-; all-the-icons (for spaceline)
-;(use-package all-the-icons)
-
 ; spaceline
 (use-package spaceline
   :ensure t
   :config
   (spaceline-emacs-theme)
   (setq spaceline-highlight-face-func 'spaceline-highlight-face-modified))
-;(use-package spaceline-all-the-icons
-;  :after spaceline
-;  :config
-;  (spaceline-all-the-icons-theme))
 
-(setq ;spaceline-all-the-icons-separator-type 'wave
-      spaceline-separator-dir-left '(left . left)
-      spaceline-separator-dir-right '(right . right)
-      spaceline-minor-modes-separator " > "
-      )
+(use-package spaceline-all-the-icons
+ :after spaceline
+ :config
+ (spaceline-all-the-icons-theme))
 
-;(setq spaceline-all-the-icons-icon-set-flycheck-slim 'dots
-;      spaceline-all-the-icons-icon-set-git-ahead 'commit
-;      spaceline-all-the-icons-flycheck-alternate t
-;      spaceline-all-the-icons-highlight-file-name t
-;      spaceline-highlight-face-func 'spaceline-highlight-face-modified)
+(setq spaceline-all-the-icons-separator-type 'wave) ;slant is default
+(setq spaceline-all-the-icons-file-name-highlight "#42f4c8")
+(setq spaceline-all-the-icons-hide-long-buffer-path t)
 
 (set-face-attribute 'spaceline-unmodified nil :background "#ed9442") ; LightSkyBlue
 (set-face-attribute 'spaceline-modified nil :background "#ef6034") ; #f7e165
@@ -294,13 +232,6 @@
   (when (memq window-system '(mac ns x))
   (exec-path-from-shell-initialize)))
 
-;; Projectile
-;; (use-package projectile
-;;   :ensure t
-;;   :config
-;;   (projectile-mode +1)
-;;   (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map))
-
 ;; rainbow-delimiters
 (use-package rainbow-delimiters
   :ensure t
@@ -322,30 +253,15 @@
     (add-hook 'c-mode-hook 'rtags-start-process-unless-running)
     (add-hook 'c++-mode-hook 'rtags-start-process-unless-running)
     (add-hook 'objc-mode-hook 'rtags-start-process-unless-running)
-    ;;
     (define-key c-mode-base-map (kbd "M-.") (function rtags-find-symbol-at-point))
     (define-key c-mode-base-map (kbd "M-,") (function rtags-find-references-at-point))
     (define-key c-mode-base-map (kbd "M-(") (function rtags-location-stack-back))
-    ;; (define-key c-mode-base-map (kbd "M-)") (function rtags-location-stack-forward))
     (define-key c-mode-base-map (kbd "M-)") (function rtags-find-symbol-at-point))
     (define-key c-mode-base-map (kbd "<C-tab>") (function company-complete))))
-
 
 ;; Flycheck-rtags
 (use-package flycheck-rtags
  :ensure t)
-
-(require 'flycheck-rtags)
-(defun use-rtags ()
-  "RTags setup for c/c++/java."
-  (interactive)
- (flycheck-select-checker 'rtags)
- (setq-local flycheck-highlighting-mode nil)
- (setq-local flycheck-check-syntax-automatically nil)
- (rtags-start-process-unless-running))
-;; (add-hook 'c-mode-hook #'use-rtags)
-;; (add-hook 'c++-mode-hook #'use-rtags)
-
 
 ;; cmake-ide
 (use-package cmake-ide
@@ -354,15 +270,6 @@
  (progn
    (require 'rtags)
    (cmake-ide-setup)))
-;    (setq cmake-ide-build-pool-use-persistent-naming t)
-;    (setq cmake-ide-flags-c++ (append '("-std=c++11")))))
-
-;; counsel-etags with universal-ctags as backend (replacing rtags)
-;(use-package counsel-etags
-;  :ensure t
-;  :config
-;  (require 'cc-mode)
-;  (define-key c-mode-base-map (kbd "C-c r") 'counsel-etags-find-tag-at-point))
 
 ;; modern-cpp-font-lock for modern c++ highlighting
 (use-package modern-cpp-font-lock
@@ -373,10 +280,6 @@
 (add-hook 'c++-mode-hook 'electric-pair-mode)
 (add-hook 'python-mode-hook 'electric-pair-mode)
 
-;; Use linux kernel style for c major modes
-;(setq c-default-style '((java-mode . "java")
-;                        (awk-mode . "awk")
-;                        (other . "linux")))
 ;; 4 space indent in ccmodes
 (setq c-basic-offset 4)
 
@@ -396,6 +299,9 @@
 (global-set-key (kbd "”") 'backward-word)
 
 (add-to-list 'load-path "~/.emacs.d/framemove/")
+
+;; framemove for windmove functionality across frames.
+;; not available on melpa - download manually.
 (require 'framemove)
 (setq framemove-hook-into-windmove t)
 
@@ -408,9 +314,6 @@
 (use-package cmake-mode
   :ensure t)
 
-;; Python
-;(setq python-shell-interpreter "python")
-
 ;; Multi-term
 (use-package multi-term
   :ensure t
@@ -418,7 +321,6 @@
   (setq multi-term-program "/usr/bin/bash"))
 
 ;; Misc
-;; (global-hl-line-mode t)
 (set-face-attribute 'default nil :font "inconsolata-15") ; Menlo-15 is nice too
 (scroll-bar-mode -1)
 (global-display-line-numbers-mode)
@@ -426,26 +328,30 @@
 (column-number-mode t)
 (add-hook 'c-mode-common-hook 'auto-fill-mode)
 (menu-bar-mode -1)
-(global-set-key (kbd "M-<backspace>") 'delete-forward-char)
-(add-hook 'eww-mode-hook (lambda()(
-				   define-key eww-mode-map (kbd "M-c") 'eww-toggle-colors)))
+(add-hook 'eww-mode-hook
+	  (lambda()(define-key eww-mode-map (kbd "M-c") 'eww-toggle-colors)))
 (global-set-key (kbd "C-t") (lookup-key global-map (kbd "C-x 5")))
+(use-package fancy-battery
+  :ensure t
+  :config
+  (add-hook 'after-init-hook #'fancy-battery-mode))
 
-
-(setq ring-bell-function		;flash the modeline instead of bell
+;; flash the modeline instead of bell
+(setq ring-bell-function
       (lambda ()
         (let ((orig-fg (face-foreground 'mode-line)))
           (set-face-foreground 'mode-line "#F2804F")
           (run-with-idle-timer 0.1 nil
                                (lambda (fg) (set-face-foreground 'mode-line fg))
                                orig-fg))))
-(setq visible-bell 1)			;prevent audible bell
+;; prevent audible bell
+(setq visible-bell 1)
 
 ;; open init.el by "M-x init"
 (defun init ()
   "Edit the `user-init-file', in another window."
   (interactive)
-  (find-file-other-window user-init-file))
+  (find-file user-init-file))
 
 ;; toggle an inferior shell
 (defun my-toggle-inferior-shell ()
@@ -488,3 +394,17 @@
 
 (provide 'init)
 ;;; init.el ends here
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages
+   (quote
+    (fancy-battery yasnippet-snippets which-key use-package try treemacs-projectile treemacs-magit treemacs-icons-dired spaceline-all-the-icons rust-mode rainbow-delimiters org-bullets multi-term monokai-theme modern-cpp-font-lock gruvbox-theme flymd flycheck-rtags flycheck-irony exotica-theme exec-path-from-shell doom-themes diff-hl counsel-etags company-jedi company-irony company-c-headers cmake-mode cmake-ide clang-format))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
