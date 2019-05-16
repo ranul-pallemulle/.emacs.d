@@ -177,18 +177,19 @@
     :ensure t)
 
   ;; Themes
-  (use-package all-the-icons		;required by doom-neotree
+  (use-package all-the-icons		;required by doom-neotree, spaceline
     :ensure t)
 
   (use-package doom-themes
     :ensure t
     :config
-    (load-theme 'doom-vibrant t)
-    (doom-themes-org-config)
+    (load-theme 'doom-spacegrey t)
     (setq doom-themes-enable-bold t
 	  doom-themes-enable-italic t)
-    (doom-themes-treemacs-config))
-
+    (doom-themes-treemacs-config)
+    (doom-themes-visual-bell-config)
+    (doom-themes-org-config))
+  
   ;; spaceline
   (use-package spaceline
     :ensure t
