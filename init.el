@@ -229,8 +229,8 @@
 (use-package exec-path-from-shell
   :ensure t
   :config
-  (when (memq window-system '(mac ns x))
-  (exec-path-from-shell-initialize)))
+  ;; (when (memq window-system '(mac ns x))
+  (exec-path-from-shell-initialize))
 
 ;; rainbow-delimiters
 (use-package rainbow-delimiters
@@ -320,6 +320,15 @@
   :config
   (setq multi-term-program "/usr/bin/bash"))
 
+(use-package auctex
+  :defer t
+  :ensure t)
+;; :config
+;; (add-hook 'LaTeX-mode-hook
+(setq TeX-auto-save t)
+(setq TeX-parse-self t)
+(setq-default TeX-master nil)
+
 ;; Misc
 (set-face-attribute 'default nil :font "inconsolata-15") ; Menlo-15 is nice too
 (scroll-bar-mode -1)
@@ -331,6 +340,7 @@
 (add-hook 'eww-mode-hook
 	  (lambda()(define-key eww-mode-map (kbd "M-c") 'eww-toggle-colors)))
 (global-set-key (kbd "C-t") (lookup-key global-map (kbd "C-x 5")))
+(global-set-key (kbd "s-u") 'revert-buffer)
 (use-package fancy-battery
   :ensure t
   :config
@@ -389,6 +399,11 @@
 ;; TRAMP
 (setq tramp-verbose 6)
 
+;; PDF-view - make it autorevert
+(add-hook 'doc-view-mode-hook
+	  'auto-revert-mode)
+(setq doc-view-continuous t)
+
 ;; ;; mouse autofocus window on hover
 ;; (setq mouse-autoselect-window t)
 
@@ -399,9 +414,23 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(TeX-view-program-list
+   (quote
+    (("Emacs"
+      ("emacsclient -e '(with-current-buffer (buffer-name) (find-file-other-window \"%o\"))'")
+      "emacsclient"))))
+ '(TeX-view-program-selection
+   (quote
+    (((output-pdf has-no-display-manager)
+      "dvi2tty")
+     ((output-dvi style-pstricks)
+      "dvips and gv")
+     (output-pdf "Emacs")
+     (output-dvi "PDF Tools")
+     (output-html "xdg-open"))))
  '(package-selected-packages
    (quote
-    (fancy-battery yasnippet-snippets which-key use-package try treemacs-projectile treemacs-magit treemacs-icons-dired spaceline-all-the-icons rust-mode rainbow-delimiters org-bullets multi-term monokai-theme modern-cpp-font-lock gruvbox-theme flymd flycheck-rtags flycheck-irony exotica-theme exec-path-from-shell doom-themes diff-hl counsel-etags company-jedi company-irony company-c-headers cmake-mode cmake-ide clang-format))))
+    (auctex fancy-battery yasnippet-snippets which-key use-package try treemacs-projectile treemacs-magit treemacs-icons-dired spaceline-all-the-icons rust-mode rainbow-delimiters org-bullets multi-term monokai-theme modern-cpp-font-lock gruvbox-theme flymd flycheck-rtags flycheck-irony exotica-theme exec-path-from-shell doom-themes diff-hl counsel-etags company-jedi company-irony company-c-headers cmake-mode cmake-ide clang-format))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
