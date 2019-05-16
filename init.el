@@ -37,34 +37,6 @@
     (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
   (add-hook 'org-mode-hook '(lambda () (setq fill-column 80)))
   (add-hook 'org-mode-hook 'turn-on-auto-fill)
-  ;; Make windmove work in org-mode:
-  ;;(setq org-disputed-keys '(([(shift up)] . [(meta p)])
-  ;;                          ([(shift down)] . [(meta n)])
-  ;;                          ([(shift left)] . [(meta -)])
-  ;;                          ([(shift right)] . [(meta +)])
-  ;;                          ([(meta return)] . [(control meta return)])
-  ;;                          ([(control shift right)] . [(meta shift +)])
-  ;;                          ([(control shift left)] . [(meta shift -)])))
-  ;;(setq org-replace-disputed-keys t)
-
-  ;; AucTex was compiled and installed separately
-(when (memq window-system '(mac ns x))
-  (load "auctex.el" nil t t)
-  (load "preview-latex.el" nil t t)
-  
-  (setq TeX-auto-save t)
-  (setq TeX-parse-self t)
-  (setq-default TeX-master nil))
-
-
-  ;; Auto complete
-  ;;(use-package auto-complete
-  ;;  :ensure t
-  ;;  :init
-  ;;  (progn
-  ;;    (ac-config-default)
-  ;;    (global-auto-complete-mode t)
-  ;;    ))
 
   ;; Irony mode
   (use-package irony
@@ -108,9 +80,6 @@
     (add-hook 'c++-mode-hook (lambda () (setq flycheck-checker 'c/c++-gcc)))
     (add-hook 'c++-mode-hook (lambda () (setq flycheck-gcc-language-standard "c++14")))
     (add-hook 'c++-mode-hook (lambda () (setq flycheck-c/c++-gcc-executable "/usr/local/Cellar/gcc/9.1.0/bin/g++-9")))
-    ;; (add-hook 'c++-mode-hook (lambda () (setq flycheck-clang-language-standard "c++11")))
-    ;; (add-hook 'c++-mode-hook (lambda () (setq flycheck-c/c++-clang-executable "/usr/local/Cellar/llvm/7.0.0/bin/clang++")))
-    ;; (add-hook 'c++-mode-hook (lambda () (setq flycheck-clang-args "-O2"))))
     (add-hook 'c-mode-hook (lambda () (setq flycheck-checker 'c/c++-gcc)))
     (add-hook 'c-mode-hook (lambda () (setq flycheck-gcc-language-standard "gnu99")))
     )
@@ -127,7 +96,6 @@
     :config
     (yas-global-mode 1))
   (use-package yasnippet-snippets)
-
 
   ;; Rust
   (use-package rust-mode
@@ -199,14 +167,6 @@
           ("C-x t C-t" . treemacs-find-file)
           ("C-x t M-t" . treemacs-find-tag)))
 
-  ;; (use-package treemacs-evil
-  ;;   :after treemacs evil
-  ;;   :ensure t)
-
-  (use-package treemacs-projectile
-    :after treemacs projectile
-    :ensure t)
-
   (use-package treemacs-icons-dired
     :after treemacs dired
     :ensure t
@@ -217,11 +177,9 @@
     :ensure t)
 
   ;; Themes
-  ;; (use-package gruvbox-theme
-  ;;   :ensure t
-  ;;   :config (load-theme 'gruvbox-dark-soft  t))
   (use-package all-the-icons		;required by doom-neotree
     :ensure t)
+
   (use-package doom-themes
     :ensure t
     :config
@@ -230,20 +188,6 @@
     (setq doom-themes-enable-bold t
 	  doom-themes-enable-italic t)
     (doom-themes-treemacs-config))
-  ;; (use-package exotica-theme
-  ;;   :ensure t
-  ;;   :config (load-theme 'exotica t))
-
-  ;; smart-mode-line (now using spaceline instead)
-  ;;(use-package smart-mode-line
-  ;;  :ensure t
-  ;;  :config
-  ;;  (sml/setup)
-  ;;  (sml/apply-theme 'respectful))
-  ;;(set-face-attribute 'mode-line-buffer-id nil :background "#65d5f7" :foreground "black")
-
-  ;; all-the-icons (for spaceline)
-  ;;(use-package all-the-icons)
 
   ;; spaceline
   (use-package spaceline
@@ -251,22 +195,22 @@
     :config
     (spaceline-emacs-theme)
     (setq spaceline-highlight-face-func 'spaceline-highlight-face-modified))
-					;(use-package spaceline-all-the-icons
-					;  :after spaceline
-					;  :config
-					;  (spaceline-all-the-icons-theme))
+  (use-package spaceline-all-the-icons
+	       :after spaceline
+	       :config
+	       (spaceline-all-the-icons-theme))
 
-  (setq ;spaceline-all-the-icons-separator-type 'wave
+  (setq spaceline-all-the-icons-separator-type 'wave
    spaceline-separator-dir-left '(left . left)
    spaceline-separator-dir-right '(right . right)
-   spaceline-minor-modes-separator " > "
    )
 
-  ;;(setq spaceline-all-the-icons-icon-set-flycheck-slim 'dots
-  ;;      spaceline-all-the-icons-icon-set-git-ahead 'commit
-  ;;      spaceline-all-the-icons-flycheck-alternate t
-  ;;      spaceline-all-the-icons-highlight-file-name t
-  ;;      spaceline-highlight-face-func 'spaceline-highlight-face-modified)
+  (setq spaceline-all-the-icons-icon-set-flycheck-slim 'dots
+        spaceline-all-the-icons-icon-set-git-ahead 'commit
+        spaceline-all-the-icons-flycheck-alternate t
+        spaceline-all-the-icons-highlight-file-name t
+        spaceline-highlight-face-func 'spaceline-highlight-face-modified)
+  (setq spaceline-all-the-icons-hide-long-buffer-path t)
 
   (set-face-attribute 'spaceline-unmodified nil :background "#ed9442") ; LightSkyBlue
   (set-face-attribute 'spaceline-modified nil :background "#ef6034") ; #f7e165
@@ -293,14 +237,6 @@
     (exec-path-from-shell-copy-env "CPLUS_INCLUDE_PATH")
     (exec-path-from-shell-initialize))
 
-  ;; Projectile
-  (use-package projectile
-    :ensure t
-    :config
-    (projectile-mode +1)
-    (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
-    (setq projectile-mode-line "Projectile"))
-
   ;; rainbow-delimiters
   (use-package rainbow-delimiters
     :ensure t
@@ -309,53 +245,6 @@
     (add-hook 'python-mode-hook 'rainbow-delimiters-mode)
     (add-hook 'emacs-lisp-mode-hook 'rainbow-delimiters-mode)
     (add-hook 'rust-mode-hook 'rainbow-delimiters-mode))
-
-;;   ;; RTags (for cmake ide), needs external daemon
-;;   (use-package rtags
-;;     :ensure t
-;;     :config
-;;     (progn
-;;       ;; (setq rtags-path "/Users/ranulpallemulle/Downloads/rtags/bin")
-;;       (setq rtags-autostart-diagnostics t)
-;;       (setq rtags-completions-enabled t)
-;;       (rtags-enable-standard-keybindings)
-;;       (push 'company-rtags company-backends)
-;;       (add-hook 'c-mode-hook 'rtags-start-process-unless-running)
-;;       (add-hook 'c++-mode-hook 'rtags-start-process-unless-running)
-;;       (add-hook 'objc-mode-hook 'rtags-start-process-unless-running)
-      
-;;       (define-key c-mode-base-map (kbd "M-.") (function rtags-find-symbol-at-point))
-;;       (define-key c-mode-base-map (kbd "s-.") (function rtags-find-symbol-at-point))
-;;       (define-key c-mode-base-map (kbd "M-,") (function rtags-find-references-at-point))))
-
-;;   ;; cmake-ide
-;;   (use-package cmake-ide
-;;     :ensure t
-;;     :config
-;;     (progn
-;;       (require 'rtags)
-;;       (cmake-ide-setup)))
-;;       ;; (setq cmake-ide-build-pool-use-persistent-naming t)))
-;; ;      (setq cmake-ide-flags-c++ (append '("-std=c++14")))))
-
-;;   ;; Flycheck-rtags
-;;   (use-package flycheck-rtags
-;;     :ensure t)
-
-  ;; (defun my-flycheck-rtags-setup ()
-  ;;  "RTags setup for c/c++/java."
-  ;;  (flycheck-select-checker 'rtags)
-  ;;  (setq-local flycheck-highlighting-mode nil)
-  ;;  (setq-local flycheck-check-syntax-automatically nil))
-  ;;(add-hook 'c-mode-hook #'my-flycheck-rtags-setup)
-  ;;(add-hook 'c++-mode-hook #'my-flycheck-rtags-setup)
-
-  ;; counsel-etags with universal-ctags as backend (replacing rtags)
-  ;;(use-package counsel-etags
-  ;;  :ensure t
-  ;;  :config
-  ;;  (require 'cc-mode)
-  ;;  (define-key c-mode-base-map (kbd "C-c r") 'counsel-etags-find-tag-at-point))
 
   ;; modern-cpp-font-lock for modern c++ highlighting
   (use-package modern-cpp-font-lock
@@ -367,10 +256,6 @@
   (add-hook 'python-mode-hook 'electric-pair-mode)
   (add-hook 'rust-mode-hook 'electric-pair-mode)
 
-  ;; Use linux kernel style for c major modes
-  ;;(setq c-default-style '((java-mode . "java")
-  ;;                        (awk-mode . "awk")
-  ;;                        (other . "linux")))
   ;; 4 space indent in ccmodes
   (setq c-basic-offset 4)
 
@@ -385,14 +270,8 @@
   (global-set-key (kbd "s-a") 'windmove-left)
   (global-set-key (kbd "s-d") 'windmove-right)
 
-  (global-set-key (kbd "C-c i") 'windmove-up)
-  (global-set-key (kbd "C-c k") 'windmove-down)
-  (global-set-key (kbd "C-c j") 'windmove-left)
-  (global-set-key (kbd "C-c l") 'windmove-right)
-
   ;; Python
   (setq python-shell-interpreter "python3")
-
 
   ;; Misc
   (global-hl-line-mode t)
@@ -404,12 +283,16 @@
   (add-hook 'org-mode-hook (lambda() (display-line-numbers-mode -1)))
   (column-number-mode t)
   (add-hook 'c-mode-common-hook 'auto-fill-mode)
-  ;; (when (memq window-system '(mac ns x))
   (menu-bar-mode -1)
   (global-set-key (kbd "M-<backspace>") 'delete-forward-char)
   (add-hook
    'eww-mode-hook
    (lambda()(define-key eww-mode-map (kbd "M-c") 'eww-toggle-colors)))
+
+  (use-package fancy-battery
+    :ensure t
+    :config
+    (add-hook 'after-init-hook #'fancy-battery-mode))
 
   ;; open init.el by "M-x init"
   (defun init ()
@@ -445,11 +328,11 @@
                            'comint-postoutput-scroll-to-bottom)))
 
   ;; tramp
-  (setq remote-file-name-inhibit-cache nil)
-  (setq vc-ignore-dir-regexp
-	(format "%s\\|%s"
-                vc-ignore-dir-regexp
-                tramp-file-name-regexp))
+;  (setq remote-file-name-inhibit-cache nil)
+;  (setq vc-ignore-dir-regexp
+;	(format "%s\\|%s"
+;                vc-ignore-dir-regexp
+;                tramp-file-name-regexp))
   (setq tramp-verbose 1)
 
   ;; some environment variables
@@ -464,6 +347,8 @@
   (let ((fyp (shell-command-to-string ". ~/.bash_profile; echo -n $fyp")))
     (setenv "fyp" fyp))
   )
+
+(setq default-directory "~/")
 
 (provide 'init)
 ;;; init.el ends here
