@@ -167,11 +167,6 @@
           ("C-x t C-t" . treemacs-find-file)
           ("C-x t M-t" . treemacs-find-tag)))
 
-  (use-package treemacs-icons-dired
-    :after treemacs dired
-    :ensure t
-    :config (treemacs-icons-dired-mode))
-
   (use-package treemacs-magit
     :after treemacs magit
     :ensure t)
@@ -284,11 +279,20 @@
   (add-hook 'org-mode-hook (lambda() (display-line-numbers-mode -1)))
   (column-number-mode t)
   (add-hook 'c-mode-common-hook 'auto-fill-mode)
+  (add-hook 'python-mode-hook 'auto-fill-mode)
   (menu-bar-mode -1)
-  (global-set-key (kbd "M-<backspace>") 'delete-forward-char)
+  ;; eww mode by default displays pictures weird
   (add-hook
    'eww-mode-hook
    (lambda()(define-key eww-mode-map (kbd "M-c") 'eww-toggle-colors)))
+  ;; use Command key to do comments
+  (global-set-key (kbd "s-;") 'comment-dwim)
+  ;; default line wrap column number
+  (setq-default fill-column 80)
+  ;; Nicer key bindings for navigation
+  (global-set-key (kbd "s-f") 'forward-word)
+  (global-set-key (kbd "s-b") 'backward-word)
+  (global-set-key (kbd "s-v") 'scroll-down-command)
 
   (use-package fancy-battery
     :ensure t
