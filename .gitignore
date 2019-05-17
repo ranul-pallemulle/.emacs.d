@@ -1,0 +1,6 @@
+.cache/
+.python-environments/
+auto-save-list/
+elpa/
+flycheck_init.el
+transient/
