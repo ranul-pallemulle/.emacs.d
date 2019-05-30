@@ -189,11 +189,12 @@
 (use-package doom-themes
   :ensure t
   :config
-  (load-theme 'doom-vibrant t)
+  (load-theme 'doom-spacegrey t)		;doom-vibrant, doom-spacegrey
   (doom-themes-org-config)
   (setq doom-themes-enable-bold t
 	doom-themes-enable-italic t)
-  (doom-themes-treemacs-config))
+  (doom-themes-treemacs-config)
+  (doom-themes-org-config))
 
 ; spaceline
 (use-package spaceline
@@ -322,18 +323,24 @@
 
 (use-package auctex
   :defer t
-  :ensure t)
-;; :config
-;; (add-hook 'LaTeX-mode-hook
-(setq TeX-auto-save t)
-(setq TeX-parse-self t)
-(setq-default TeX-master nil)
+  :ensure t
+  :config
+  (progn
+    (setq TeX-auto-save t)
+    (setq TeX-parse-self t)
+    (setq-default TeX-master nil)
+    (add-hook 'doc-view-mode-hook
+	      (lamda() (auto-revert-mode t)))
+    (add-hook 'doc-view-mode hook
+	      (lambda() (setq doc-view-continuous t)))
+    (add-hook 'doc-view-mode hook 'doc-view-fit-width-to-window)))
 
 ;; Misc
 (set-face-attribute 'default nil :font "inconsolata-15") ; Menlo-15 is nice too
 (scroll-bar-mode -1)
 (global-display-line-numbers-mode)
 (add-hook 'org-mode-hook (lambda() (display-line-numbers-mode -1)))
+(add-hook 'doc-view-mode-hook (lambda() (display-line-numbers-mode -1)))
 (column-number-mode t)
 (add-hook 'c-mode-common-hook 'auto-fill-mode)
 (menu-bar-mode -1)
@@ -399,13 +406,15 @@
 ;; TRAMP
 (setq tramp-verbose 6)
 
-;; PDF-view - make it autorevert
-(add-hook 'doc-view-mode-hook
-	  'auto-revert-mode)
-(setq doc-view-continuous t)
-
 ;; ;; mouse autofocus window on hover
 ;; (setq mouse-autoselect-window t)
+
+(global-set-key (kbd "C-9") (lambda()
+			      (interactive)
+			      (insert-char ?\\)))
+(global-set-key (kbd "C-0") (lambda()
+			      (interactive)
+			      (insert-char ?|)))
 
 (provide 'init)
 ;;; init.el ends here
@@ -437,3 +446,4 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
+(put 'upcase-region 'disabled nil)
