@@ -82,6 +82,7 @@
     (add-hook 'c++-mode-hook (lambda () (setq flycheck-c/c++-gcc-executable "/usr/local/Cellar/gcc/9.1.0/bin/g++-9")))
     (add-hook 'c-mode-hook (lambda () (setq flycheck-checker 'c/c++-gcc)))
     (add-hook 'c-mode-hook (lambda () (setq flycheck-gcc-language-standard "gnu99")))
+    (add-hook 'python-mode-hook (lambda () (setq flycheck-python-pycompile-executable "/usr/local/bin/python3")))
     )
 
   ;; Flycheck-irony
@@ -266,6 +267,29 @@
   (global-set-key (kbd "s-a") 'windmove-left)
   (global-set-key (kbd "s-d") 'windmove-right)
 
+  ;; cmake-mode
+  (use-package cmake-mode
+    :ensure t)
+
+  ;; auctex
+  (use-package auctex
+    :defer t
+    :ensure t
+    :config
+    (progn
+      (setq TeX-auto-save t)
+      (setq TeX-parse-self t)
+      (setq-default TeX-master nil)
+      (add-hook 'doc-view-mode-hook
+		(lambda() (auto-revert-mode t)))
+      (add-hook 'doc-view-mode-hook
+		(lambda() (setq doc-view-continuous t)))))
+
+  (use-package fancy-battery
+    :ensure t
+    :config
+    (add-hook 'after-init-hook #'fancy-battery-mode))  
+
   ;; Python
   (setq python-shell-interpreter "python3")
 
@@ -277,6 +301,9 @@
   (scroll-bar-mode -1))
   (global-display-line-numbers-mode)
   (add-hook 'org-mode-hook (lambda() (display-line-numbers-mode -1)))
+  (add-hook 'doc-view-mode-hook
+	    (lambda() (display-line-numbers-mode -1)))
+  
   (column-number-mode t)
   (add-hook 'c-mode-common-hook 'auto-fill-mode)
   (add-hook 'python-mode-hook 'auto-fill-mode)
@@ -293,19 +320,27 @@
   (global-set-key (kbd "s-f") 'forward-word)
   (global-set-key (kbd "s-b") 'backward-word)
   (global-set-key (kbd "s-v") 'scroll-down-command)
-
-  (use-package fancy-battery
-    :ensure t
-    :config
-    (add-hook 'after-init-hook #'fancy-battery-mode))
+  ;; Open schedule in org-mode
+  (add-to-list 'auto-mode-alist '("\\.schedule\\'" . org-mode))
 
   ;; open init.el by "M-x init"
   (defun init ()
-    "Edit the `user-init-file', in another window."
+    "Edit the `user-init-file'."
     (interactive)
     ;; (find-file-other-window user-init-file))
-    (find-file user-init-file)
-    )
+    (find-file user-init-file))
+
+  ;; open schedule file by "M-x sched"
+  (defun sched ()
+    "Edit my schedule file."
+    (interactive)
+    (find-file "~/.schedule"))
+
+  ;; open org-agenda by "M-x ag"
+  (defun ag ()
+    "Open `org-agenda'."
+    (interactive)
+    (org-agenda))
 
   ;; toggle an inferior shell
   (defun my-toggle-inferior-shell ()
@@ -357,3 +392,17 @@
 
 (provide 'init)
 ;;; init.el ends here
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(org-agenda-files '("~/.schedule"))
+ '(package-selected-packages
+   '(cmake-mode yasnippet-snippets which-key w3 use-package try treemacs-magit treemacs-icons-dired spaceline-all-the-icons rust-mode rainbow-delimiters org-bullets modern-cpp-font-lock flycheck-irony fancy-battery exec-path-from-shell doom-themes diff-hl company-jedi company-irony company-c-headers)))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
