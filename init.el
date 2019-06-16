@@ -35,10 +35,10 @@
 (add-hook 'org-mode-hook '(lambda () (setq fill-column 65)))
 (add-hook 'org-mode-hook 'turn-on-auto-fill)
 ;; Make windmove work in org-mode:
-(setq org-disputed-keys '(([(shift up)] . [(meta p)])
-                         ([(shift down)] . [(meta n)])
-                         ([(shift left)] . [(meta -)])
-                         ([(shift right)] . [(meta +)])
+(setq org-disputed-keys '(([(shift up)] . [(meta up)])
+                         ([(shift down)] . [(meta down)])
+                         ([(shift left)] . [(meta left)])
+                         ([(shift right)] . [(meta right)])
                          ([(meta return)] . [(control meta return)])
                          ([(control shift right)] . [(meta shift +)])
                          ([(control shift left)] . [(meta shift -)])))
@@ -85,7 +85,13 @@
   :config
   (global-flycheck-mode t)
   (add-hook 'c++-mode-hook (lambda () (setq flycheck-checker 'c/c++-gcc)))
-  (add-hook 'c++-mode-hook (lambda () (setq flycheck-gcc-language-standard "c++11"))))
+  (add-hook 'c++-mode-hook (lambda () (setq flycheck-gcc-language-standard "c++11")))
+  (add-hook 'c-mode-hook (lambda () (setq flycheck-checker 'c/c++-gcc)))
+  (add-hook 'c-mode-hook (lambda () (setq flycheck-gcc-language-standard "gnu99")))
+  )
+
+(use-package flycheck-pkg-config
+  :ensure t)
 
 ;; Flycheck-irony
 (use-package flycheck-irony
@@ -189,31 +195,47 @@
 (use-package doom-themes
   :ensure t
   :config
-  (load-theme 'doom-spacegrey t)		;doom-vibrant, doom-spacegrey
+  (load-theme 'misterioso t)		;doom-vibrant, doom-spacegrey
   (doom-themes-org-config)
   (setq doom-themes-enable-bold t
 	doom-themes-enable-italic t)
-  (doom-themes-treemacs-config)
-  (doom-themes-org-config))
+  (doom-themes-treemacs-config))
 
 ; spaceline
 (use-package spaceline
   :ensure t
   :config
   (spaceline-emacs-theme)
-  (setq spaceline-highlight-face-func 'spaceline-highlight-face-modified))
+  (setq spaceline-highlight-face-func 'spaceline-highlight-face-modified)
+  (setq spaceline-separator-dir-left '(left . left)
+	spaceline-separator-dir-right '(right . right))
+  (set-face-attribute 'spaceline-unmodified nil :background "#ed9442") ; LightSkyBlue
+  (set-face-attribute 'spaceline-modified nil :background "#ef6034") ; #f7e165
+)
 
-(use-package spaceline-all-the-icons
- :after spaceline
- :config
- (spaceline-all-the-icons-theme))
+;; (use-package spaceline-all-the-icons
+;;  :after spaceline
+;;  :config
+;;  (spaceline-all-the-icons-theme))
 
-(setq spaceline-all-the-icons-separator-type 'wave) ;slant is default
-(setq spaceline-all-the-icons-file-name-highlight "#42f4c8")
-(setq spaceline-all-the-icons-hide-long-buffer-path t)
+;; (setq spaceline-all-the-icons-separator-type 'wave) ;slant is default
+;; (setq spaceline-all-the-icons-file-name-highlight "#42f4c8")
+;; (setq spaceline-all-the-icons-hide-long-buffer-path t)
 
-(set-face-attribute 'spaceline-unmodified nil :background "#ed9442") ; LightSkyBlue
-(set-face-attribute 'spaceline-modified nil :background "#ef6034") ; #f7e165
+(use-package diminish
+  :ensure t
+  :config
+  (diminish 'yas-minor-mode)
+  (diminish 'flycheck-mode)
+  (diminish 'company-mode)
+  (diminish 'which-key-mode)
+  (diminish 'eldoc-mode)
+  (diminish 'irony-mode)
+  (diminish 'abbrev-mode)
+  (diminish 'auto-fill-function)
+  (diminish 'auto-revert-mode)
+  (diminish 'magit-auto-revert-mode)
+  )
 
 ;; Magit
 (use-package magit
@@ -242,35 +264,35 @@
   (add-hook 'emacs-lisp-mode-hook 'rainbow-delimiters-mode))
 
 ;; RTags (for cmake ide), needs external daemon
-(use-package rtags
-  :ensure t
-  :config
-  (progn
-    (setq rtags-path "/usr/local/bin/")
-    (setq rtags-autostart-diagnostics t)
-    (setq rtags-completions-enabled t)
-    (rtags-enable-standard-keybindings)
-    (push 'company-rtags company-backends)
-    (add-hook 'c-mode-hook 'rtags-start-process-unless-running)
-    (add-hook 'c++-mode-hook 'rtags-start-process-unless-running)
-    (add-hook 'objc-mode-hook 'rtags-start-process-unless-running)
-    (define-key c-mode-base-map (kbd "M-.") (function rtags-find-symbol-at-point))
-    (define-key c-mode-base-map (kbd "M-,") (function rtags-find-references-at-point))
-    (define-key c-mode-base-map (kbd "M-(") (function rtags-location-stack-back))
-    (define-key c-mode-base-map (kbd "M-)") (function rtags-find-symbol-at-point))
-    (define-key c-mode-base-map (kbd "<C-tab>") (function company-complete))))
+;; (use-package rtags
+;;   :ensure t
+;;   :config
+;;   (progn
+;;     (setq rtags-path "/usr/local/bin/")
+;;     (setq rtags-autostart-diagnostics t)
+;;     (setq rtags-completions-enabled t)
+;;     (rtags-enable-standard-keybindings)
+;;     (push 'company-rtags company-backends)
+;;     (add-hook 'c-mode-hook 'rtags-start-process-unless-running)
+;;     (add-hook 'c++-mode-hook 'rtags-start-process-unless-running)
+;;     (add-hook 'objc-mode-hook 'rtags-start-process-unless-running)
+;;     (define-key c-mode-base-map (kbd "M-.") (function rtags-find-symbol-at-point))
+;;     (define-key c-mode-base-map (kbd "M-,") (function rtags-find-references-at-point))
+;;     (define-key c-mode-base-map (kbd "M-(") (function rtags-location-stack-back))
+;;     (define-key c-mode-base-map (kbd "M-)") (function rtags-find-symbol-at-point))
+;;     (define-key c-mode-base-map (kbd "<C-tab>") (function company-complete))))
 
-;; Flycheck-rtags
-(use-package flycheck-rtags
- :ensure t)
+;; ;; Flycheck-rtags
+;; (use-package flycheck-rtags
+;;  :ensure t)
 
-;; cmake-ide
-(use-package cmake-ide
- :ensure t
- :config
- (progn
-   (require 'rtags)
-   (cmake-ide-setup)))
+;; ;; cmake-ide
+;; (use-package cmake-ide
+;;  :ensure t
+;;  :config
+;;  (progn
+;;    (require 'rtags)
+;;    (cmake-ide-setup)))
 
 ;; modern-cpp-font-lock for modern c++ highlighting
 (use-package modern-cpp-font-lock
@@ -335,6 +357,11 @@
 	      (lambda() (setq doc-view-continuous t)))
     (add-hook 'doc-view-mode hook 'doc-view-fit-width-to-window)))
 
+(use-package fancy-battery
+  :ensure t
+  :config
+  (add-hook 'after-init-hook #'fancy-battery-mode))
+
 ;; Misc
 (set-face-attribute 'default nil :font "inconsolata-15") ; Menlo-15 is nice too
 (scroll-bar-mode -1)
@@ -348,10 +375,8 @@
 	  (lambda()(define-key eww-mode-map (kbd "M-c") 'eww-toggle-colors)))
 (global-set-key (kbd "C-t") (lookup-key global-map (kbd "C-x 5")))
 (global-set-key (kbd "s-u") 'revert-buffer)
-(use-package fancy-battery
-  :ensure t
-  :config
-  (add-hook 'after-init-hook #'fancy-battery-mode))
+;; Open schedule in org-mode
+(add-to-list 'auto-mode-alist '("\\.schedule\\'" . org-mode))
 
 ;; flash the modeline instead of bell
 (setq ring-bell-function
@@ -369,6 +394,19 @@
   "Edit the `user-init-file', in another window."
   (interactive)
   (find-file user-init-file))
+
+;; open schedule file by "M-x sched"
+(defun sched ()
+  "Edit my schedule file."
+  (interactive)
+  (find-file "~/.schedule"))
+
+;; open org-agenda by "M-x ag"
+(defun ag ()
+  "Open `org-agenda'."
+  (interactive)
+  (org-agenda)
+  )
 
 ;; toggle an inferior shell
 (defun my-toggle-inferior-shell ()
@@ -391,7 +429,8 @@
 (global-set-key (kbd "C-`") 'my-toggle-inferior-shell)
 
 ;; quick compile
-(define-key c-mode-base-map (kbd "M-c") 'compile)
+(with-eval-after-load 'ccmode
+(define-key c-mode-base-map (kbd "M-c") 'compile))
 
 ;; prevent shell scroll back after clearing screen (C-l C-l)
 (add-hook 'comint-mode-hook
@@ -437,9 +476,10 @@
      (output-pdf "Emacs")
      (output-dvi "PDF Tools")
      (output-html "xdg-open"))))
+ '(org-agenda-files (quote ("~/.schedule")))
  '(package-selected-packages
    (quote
-    (auctex fancy-battery yasnippet-snippets which-key use-package try treemacs-projectile treemacs-magit treemacs-icons-dired spaceline-all-the-icons rust-mode rainbow-delimiters org-bullets multi-term monokai-theme modern-cpp-font-lock gruvbox-theme flymd flycheck-rtags flycheck-irony exotica-theme exec-path-from-shell doom-themes diff-hl counsel-etags company-jedi company-irony company-c-headers cmake-mode cmake-ide clang-format))))
+    (flycheck-pkg-config auctex fancy-battery yasnippet-snippets which-key use-package try treemacs-projectile treemacs-magit treemacs-icons-dired spaceline-all-the-icons rust-mode rainbow-delimiters org-bullets multi-term monokai-theme modern-cpp-font-lock gruvbox-theme flymd flycheck-rtags flycheck-irony exotica-theme exec-path-from-shell doom-themes diff-hl counsel-etags company-jedi company-irony company-c-headers cmake-mode cmake-ide clang-format))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
