@@ -179,40 +179,54 @@
   (use-package doom-themes
     :ensure t
     :config
-    (load-theme 'doom-spacegrey t)
+    (load-theme 'misterioso t) ;doom-spacegrey, misterioso, solarized-dark
     (setq doom-themes-enable-bold t
 	  doom-themes-enable-italic t)
     (doom-themes-treemacs-config)
     (doom-themes-visual-bell-config)
     (doom-themes-org-config))
+
   
   ;; spaceline
   (use-package spaceline
     :ensure t
     :config
     (spaceline-emacs-theme)
-    (setq spaceline-highlight-face-func 'spaceline-highlight-face-modified))
-  (use-package spaceline-all-the-icons
-	       :after spaceline
-	       :config
-	       (spaceline-all-the-icons-theme))
+    (setq spaceline-highlight-face-func 'spaceline-highlight-face-modified)
+    (setq spaceline-separator-dir-left '(left . left)
+	  spaceline-separator-dir-right '(right . right))
+    (set-face-attribute 'spaceline-unmodified nil :background "#ed9442")
+    (set-face-attribute 'spaceline-modified nil :background "#ef6034"))
+  
+  ;; (use-package spaceline-all-the-icons
+  ;; 	       :after spaceline
+  ;; 	       :config
+  ;; 	       (spaceline-all-the-icons-theme))
 
-  (setq spaceline-all-the-icons-separator-type 'wave
-   spaceline-separator-dir-left '(left . left)
-   spaceline-separator-dir-right '(right . right)
-   )
+  ;; (setq spaceline-all-the-icons-separator-type 'wave)
+  ;; (setq spaceline-all-the-icons-icon-set-flycheck-slim 'dots
+  ;;       spaceline-all-the-icons-icon-set-git-ahead 'commit
+  ;;       spaceline-all-the-icons-flycheck-alternate t
+  ;;       spaceline-all-the-icons-highlight-file-name t
+  ;;       spaceline-highlight-face-func 'spaceline-highlight-face-modified)
+  ;; (setq spaceline-all-the-icons-hide-long-buffer-path t)
 
-  (setq spaceline-all-the-icons-icon-set-flycheck-slim 'dots
-        spaceline-all-the-icons-icon-set-git-ahead 'commit
-        spaceline-all-the-icons-flycheck-alternate t
-        spaceline-all-the-icons-highlight-file-name t
-        spaceline-highlight-face-func 'spaceline-highlight-face-modified)
-  (setq spaceline-all-the-icons-hide-long-buffer-path t)
+  (use-package diminish
+    :ensure t
+    :config
+    (diminish 'yas-minor-mode)
+    (diminish 'flycheck-mode)
+    (diminish 'company-mode)
+    (diminish 'which-key-mode)
+    (diminish 'eldoc-mode)
+    (diminish 'irony-mode)
+    (diminish 'abbrev-mode)
+    (diminish 'auto-fill-function)
+    (diminish 'auto-revert-mode)
+    (diminish 'magit-auto-revert-mode)
+    )
 
-  (set-face-attribute 'spaceline-unmodified nil :background "#ed9442") ; LightSkyBlue
-  (set-face-attribute 'spaceline-modified nil :background "#ef6034") ; #f7e165
-
-  ;; Git porcelain
+  ;; Git
   (use-package magit
     :ensure t
     :bind (("C-x g" . magit-status)))
@@ -232,6 +246,8 @@
     :config
     ;; (when (memq window-system '(mac ns x))
     (exec-path-from-shell-copy-env "CPLUS_INCLUDE_PATH")
+    (exec-path-from-shell-copy-env "LD_LIBRARY_PATH")
+    (exec-path-from-shell-copy-env "PKG_CONFIG_PATH")
     (exec-path-from-shell-initialize))
 
   ;; rainbow-delimiters
@@ -295,6 +311,8 @@
 
   ;; Misc
   (global-hl-line-mode t)
+  (display-time-mode t)
+  (setq display-time-default-load-average nil)
   (set-face-attribute 'default nil :font "Monaco-15") ; Menlo-15 is nice too
   ;;(setq mac-command-modifier 'meta) ; make command function as alt key
   (when (memq window-system '(mac ns x))
@@ -397,9 +415,11 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(custom-safe-themes
+   '("8aca557e9a17174d8f847fb02870cb2bb67f3b6e808e46c0e54a44e3e18e1020" "6d589ac0e52375d311afaa745205abb6ccb3b21f6ba037104d71111e7e76a3fc" "75d3dde259ce79660bac8e9e237b55674b910b470f313cdf4b019230d01a982a" "43c808b039893c885bdeec885b4f7572141bd9392da7f0bd8d8346e02b2ec8da" "4697a2d4afca3f5ed4fdf5f715e36a6cac5c6154e105f3596b44a4874ae52c45" "a3fa4abaf08cc169b61dea8f6df1bbe4123ec1d2afeb01c17e11fdc31fc66379" default))
  '(org-agenda-files '("~/.schedule"))
  '(package-selected-packages
-   '(cmake-mode yasnippet-snippets which-key w3 use-package try treemacs-magit treemacs-icons-dired spaceline-all-the-icons rust-mode rainbow-delimiters org-bullets modern-cpp-font-lock flycheck-irony fancy-battery exec-path-from-shell doom-themes diff-hl company-jedi company-irony company-c-headers)))
+   '(solarized-theme cmake-mode yasnippet-snippets which-key w3 use-package try treemacs-magit treemacs-icons-dired spaceline-all-the-icons rust-mode rainbow-delimiters org-bullets modern-cpp-font-lock flycheck-irony fancy-battery exec-path-from-shell doom-themes diff-hl company-jedi company-irony company-c-headers)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
