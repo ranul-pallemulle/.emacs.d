@@ -195,7 +195,8 @@
 (use-package doom-themes
   :ensure t
   :config
-  (load-theme 'misterioso t)		;doom-vibrant, doom-spacegrey
+  (load-theme 'doom-spacegrey t)		;doom-vibrant, doom-spacegrey,
+					;misterioso
   (doom-themes-org-config)
   (setq doom-themes-enable-bold t
 	doom-themes-enable-italic t)
@@ -253,6 +254,10 @@
   :ensure t
   :config
   ;; (when (memq window-system '(mac ns x))
+  (exec-path-from-shell-copy-env "C_INCLUDE_PATH")
+  (exec-path-from-shell-copy-env "CPLUS_INCLUDE_PATH")
+  (exec-path-from-shell-copy-env "LD_LIBRARY_PATH")
+  (exec-path-from-shell-copy-env "PKG_CONFIG_PATH")
   (exec-path-from-shell-initialize))
 
 ;; rainbow-delimiters
@@ -366,6 +371,8 @@
 (set-face-attribute 'default nil :font "inconsolata-15") ; Menlo-15 is nice too
 (scroll-bar-mode -1)
 (global-display-line-numbers-mode)
+(display-time-mode t)
+(setq display-time-default-load-average nil)
 (add-hook 'org-mode-hook (lambda() (display-line-numbers-mode -1)))
 (add-hook 'doc-view-mode-hook (lambda() (display-line-numbers-mode -1)))
 (column-number-mode t)
