@@ -115,92 +115,13 @@
 (use-package flymd
   :ensure t)
 
-(use-package treemacs
-  :ensure t
-  :defer t
-  :init
-  (with-eval-after-load 'winum
-    (define-key winum-keymap (kbd "M-0") #'treemacs))
-  :config
-  (progn
-    (setq treemacs-collapse-dirs                 (if (executable-find "python3") 3 0)
-          treemacs-deferred-git-apply-delay      0.5
-          treemacs-display-in-side-window        t
-          treemacs-eldoc-display                 t
-          treemacs-file-event-delay              5000
-          treemacs-file-follow-delay             0.2
-          treemacs-follow-after-init             t
-          treemacs-git-command-pipe              ""
-          treemacs-goto-tag-strategy             'refetch-index
-          treemacs-indentation                   2
-          treemacs-indentation-string            " "
-          treemacs-is-never-other-window         nil
-          treemacs-max-git-entries               5000
-          treemacs-missing-project-action        'ask
-          treemacs-no-png-images                 nil
-          treemacs-no-delete-other-windows       t
-          treemacs-project-follow-cleanup        nil
-          treemacs-persist-file                  (expand-file-name ".cache/treemacs-persist" user-emacs-directory)
-          treemacs-recenter-distance             0.1
-          treemacs-recenter-after-file-follow    nil
-          treemacs-recenter-after-tag-follow     nil
-          treemacs-recenter-after-project-jump   'always
-          treemacs-recenter-after-project-expand 'on-distance
-          treemacs-show-cursor                   nil
-          treemacs-show-hidden-files             t
-          treemacs-silent-filewatch              nil
-          treemacs-silent-refresh                nil
-          treemacs-sorting                       'alphabetic-desc
-          treemacs-space-between-root-nodes      t
-          treemacs-tag-follow-cleanup            t
-          treemacs-tag-follow-delay              1.5
-          treemacs-width                         28)
-
-
-    ;; The default width and height of the icons is 22 pixels. If you are
-    ;; using a Hi-DPI display, uncomment this to double the icon size.
-    ;; (treemacs-resize-icons 44)
-
-    (treemacs-follow-mode t)
-    (treemacs-filewatch-mode t)
-    (treemacs-fringe-indicator-mode t)
-    (pcase (cons (not (null (executable-find "git")))
-                 (not (null (executable-find "python3"))))
-      (`(t . t)
-       (treemacs-git-mode 'deferred))
-      (`(t . _)
-       (treemacs-git-mode 'simple))))
-  :bind
-  (:map global-map
-        ("M-0"       . treemacs)
-        ("C-x t 1"   . treemacs-delete-other-windows)
-        ("C-x t t"   . treemacs)
-        ("C-x t B"   . treemacs-bookmark)
-        ("C-x t C-t" . treemacs-find-file)
-        ("C-x t M-t" . treemacs-find-tag)))
-
-(with-eval-after-load 'treemacs
-(set-face-attribute 'treemacs-directory-face nil :font "inconsolata-16")
-(set-face-attribute 'treemacs-file-face nil :font "inconsolata-12")
-(set-face-attribute 'treemacs-root-face nil :font "inconsolata-16"))
-
-(use-package treemacs-magit
-  :after treemacs magit
-  :ensure t)
-
 (use-package all-the-icons
   :ensure t)
 
-;; Themes
-(use-package doom-themes
+(use-package badger-theme ; nyx-theme
   :ensure t
   :config
-  (load-theme 'doom-spacegrey t)		;doom-vibrant, doom-spacegrey,
-					;misterioso
-  (doom-themes-org-config)
-  (setq doom-themes-enable-bold t
-	doom-themes-enable-italic t)
-  (doom-themes-treemacs-config))
+  (load-theme 'badger t))
 
 ; spaceline
 (use-package spaceline
@@ -211,18 +132,9 @@
   (setq spaceline-separator-dir-left '(left . left)
 	spaceline-separator-dir-right '(right . right))
   (set-face-attribute 'spaceline-unmodified nil :background "#ed9442") ; LightSkyBlue
-  (set-face-attribute 'spaceline-modified nil :background "#ef6034") ; #f7e165
-)
+  (set-face-attribute 'spaceline-modified nil :background "#ef6034")) ; #f7e165
 
-;; (use-package spaceline-all-the-icons
-;;  :after spaceline
-;;  :config
-;;  (spaceline-all-the-icons-theme))
-
-;; (setq spaceline-all-the-icons-separator-type 'wave) ;slant is default
-;; (setq spaceline-all-the-icons-file-name-highlight "#42f4c8")
-;; (setq spaceline-all-the-icons-hide-long-buffer-path t)
-
+;; diminish - hide minor modes from modeline
 (use-package diminish
   :ensure t
   :config
@@ -253,7 +165,6 @@
 (use-package exec-path-from-shell
   :ensure t
   :config
-  ;; (when (memq window-system '(mac ns x))
   (exec-path-from-shell-copy-env "C_INCLUDE_PATH")
   (exec-path-from-shell-copy-env "CPLUS_INCLUDE_PATH")
   (exec-path-from-shell-copy-env "LD_LIBRARY_PATH")
@@ -362,10 +273,19 @@
 	      (lambda() (setq doc-view-continuous t)))
     (add-hook 'doc-view-mode hook 'doc-view-fit-width-to-window)))
 
+(use-package multiple-cursors
+  :ensure t
+  :config
+  (global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
+  (global-set-key (kbd "C->") 'mc/mark-next-like-this)
+  (global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
+  (global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this))
+
 (use-package fancy-battery
   :ensure t
   :config
-  (add-hook 'after-init-hook #'fancy-battery-mode))
+  (add-hook 'after-init-hook #'fancy-battery-mode)
+  (setq fancy-battery-show-percentage t))
 
 ;; Misc
 (set-face-attribute 'default nil :font "inconsolata-15") ; Menlo-15 is nice too
@@ -452,16 +372,6 @@
 ;; TRAMP
 (setq tramp-verbose 6)
 
-;; ;; mouse autofocus window on hover
-;; (setq mouse-autoselect-window t)
-
-(global-set-key (kbd "C-9") (lambda()
-			      (interactive)
-			      (insert-char ?\\)))
-(global-set-key (kbd "C-0") (lambda()
-			      (interactive)
-			      (insert-char ?|)))
-
 (provide 'init)
 ;;; init.el ends here
 (custom-set-variables
@@ -483,10 +393,13 @@
      (output-pdf "Emacs")
      (output-dvi "PDF Tools")
      (output-html "xdg-open"))))
+ '(custom-safe-themes
+   (quote
+    ("3cd4f09a44fe31e6dd65af9eb1f10dc00d5c2f1db31a427713a1784d7db7fdfc" default)))
  '(org-agenda-files (quote ("~/.schedule")))
  '(package-selected-packages
    (quote
-    (flycheck-pkg-config auctex fancy-battery yasnippet-snippets which-key use-package try treemacs-projectile treemacs-magit treemacs-icons-dired spaceline-all-the-icons rust-mode rainbow-delimiters org-bullets multi-term monokai-theme modern-cpp-font-lock gruvbox-theme flymd flycheck-rtags flycheck-irony exotica-theme exec-path-from-shell doom-themes diff-hl counsel-etags company-jedi company-irony company-c-headers cmake-mode cmake-ide clang-format))))
+    (multiple-cursors flycheck-pkg-config auctex fancy-battery yasnippet-snippets which-key use-package try treemacs-projectile treemacs-magit treemacs-icons-dired spaceline-all-the-icons rust-mode rainbow-delimiters org-bullets multi-term monokai-theme modern-cpp-font-lock gruvbox-theme flymd flycheck-rtags flycheck-irony exotica-theme exec-path-from-shell doom-themes diff-hl counsel-etags company-jedi company-irony company-c-headers cmake-mode cmake-ide clang-format))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
