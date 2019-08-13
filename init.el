@@ -106,6 +106,7 @@
   (yas-global-mode 1))
 (use-package yasnippet-snippets)
 
+;; Rust
 (use-package rust-mode
   :ensure t
   :config
@@ -115,15 +116,17 @@
 (use-package flymd
   :ensure t)
 
+;; all-the-icons
 (use-package all-the-icons
   :ensure t)
 
+;; Theme
 (use-package badger-theme ; nyx-theme
   :ensure t
   :config
   (load-theme 'badger t))
 
-; spaceline
+; spaceline modeline
 (use-package spaceline
   :ensure t
   :config
@@ -250,15 +253,17 @@
   :config
   (global-set-key [C-M-tab] 'clang-format-region))
 
+;; cmake-mode
 (use-package cmake-mode
   :ensure t)
 
-;; Multi-term
+;; multi-term
 (use-package multi-term
   :ensure t
   :config
   (setq multi-term-program "/usr/bin/bash"))
 
+;; auctex - edit LaTeX
 (use-package auctex
   :defer t
   :ensure t
@@ -273,6 +278,7 @@
 	      (lambda() (setq doc-view-continuous t)))
     (add-hook 'doc-view-mode hook 'doc-view-fit-width-to-window)))
 
+;; multiple-cursors
 (use-package multiple-cursors
   :ensure t
   :config
@@ -281,14 +287,22 @@
   (global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
   (global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this))
 
+;; emmet - snippets for html
+(use-package emmet-mode
+  :ensure t
+  :config
+  (add-hook 'html-mode-hook #'emmet-mode))
+
+;; fancy-battery - display battery status in modeline
 (use-package fancy-battery
   :ensure t
   :config
-  (add-hook 'after-init-hook #'fancy-battery-mode)
-  (setq fancy-battery-show-percentage t))
+  (add-hook 'after-init-hook #'fancy-battery-mode))
+  ;; (setq fancy-battery-show-percentage t))
 
 ;; Misc
-(set-face-attribute 'default nil :font "inconsolata-15") ; Menlo-15 is nice too
+(set-face-attribute 'default nil :font "hack-13")
+(set-face-attribute 'region nil :background "#d6972b" :foreground "#ffffff")
 (scroll-bar-mode -1)
 (global-display-line-numbers-mode)
 (display-time-mode t)
@@ -302,6 +316,7 @@
 	  (lambda()(define-key eww-mode-map (kbd "M-c") 'eww-toggle-colors)))
 (global-set-key (kbd "C-t") (lookup-key global-map (kbd "C-x 5")))
 (global-set-key (kbd "s-u") 'revert-buffer)
+
 ;; Open schedule in org-mode
 (add-to-list 'auto-mode-alist '("\\.schedule\\'" . org-mode))
 
@@ -366,7 +381,7 @@
 			 'comint-postoutput-scroll-to-bottom)))
 
 ;; for server mode, use the same font
-(add-to-list 'default-frame-alist '(font . "inconsolata-15"))
+(add-to-list 'default-frame-alist '(font . "hack-13"))
 (add-to-list 'default-frame-alist '(scroll-bar-mode -1))
 
 ;; TRAMP
@@ -399,7 +414,7 @@
  '(org-agenda-files (quote ("~/.schedule")))
  '(package-selected-packages
    (quote
-    (multiple-cursors flycheck-pkg-config auctex fancy-battery yasnippet-snippets which-key use-package try treemacs-projectile treemacs-magit treemacs-icons-dired spaceline-all-the-icons rust-mode rainbow-delimiters org-bullets multi-term monokai-theme modern-cpp-font-lock gruvbox-theme flymd flycheck-rtags flycheck-irony exotica-theme exec-path-from-shell doom-themes diff-hl counsel-etags company-jedi company-irony company-c-headers cmake-mode cmake-ide clang-format))))
+    (emmet-mode multiple-cursors flycheck-pkg-config auctex fancy-battery yasnippet-snippets which-key use-package try treemacs-projectile treemacs-magit treemacs-icons-dired spaceline-all-the-icons rust-mode rainbow-delimiters org-bullets multi-term monokai-theme modern-cpp-font-lock gruvbox-theme flymd flycheck-rtags flycheck-irony exotica-theme exec-path-from-shell doom-themes diff-hl counsel-etags company-jedi company-irony company-c-headers cmake-mode cmake-ide clang-format))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
