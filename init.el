@@ -14,20 +14,21 @@
 
 (package-initialize)
 
-;; use-package: a package that makes it easy to install other packages
+;; use-package - easy install/configure packages
 (unless (package-installed-p 'use-package)
   (package-refresh-contents)
   (package-install 'use-package))
 
-;; try: a package that lets you try packages without installing them
+;; try - try packages temporarily
 (use-package try
   :ensure t)
 
+;; which-key - buffer with keybinding completion options
 (use-package which-key
   :ensure t
   :config (which-key-mode))
 
-;; Org-mode stuff
+;; org-mode bullet style
 (use-package org-bullets
   :ensure t
   :config
@@ -57,13 +58,19 @@
   :ensure t
   :config
   (add-hook 'after-init-hook 'global-company-mode)
-  (add-hook 'org-mode-hook (lambda () (setq-local company-dabbrev-downcase nil)))) ;prevent auto lowercasing of completions
+;prevent auto lowercasing of completions
+  (add-hook 'org-mode-hook
+	    (lambda () (setq-local company-dabbrev-downcase nil))))
 
 ;; Company-irony
 (use-package company-irony
   :ensure t
   :config
   (add-to-list 'company-backends 'company-irony))
+
+;; Company-rtags - push to company-backends when using rtags
+(use-package company-rtags
+  :ensure t)
 
 ;; Company-c-headers (for c and c++ headers completion)
 (use-package company-c-headers
@@ -79,19 +86,27 @@
     (add-to-list 'company-backends 'company-jedi))
   (add-hook 'python-mode-hook 'jedi-python-mode-hook))
 
-;; Flycheck
+;; flycheck
 (use-package flycheck
   :ensure t
   :config
   (global-flycheck-mode t)
   (add-hook 'c++-mode-hook (lambda () (setq flycheck-checker 'c/c++-gcc)))
-  (add-hook 'c++-mode-hook (lambda () (setq flycheck-gcc-language-standard "c++11")))
+  (add-hook 'c++-mode-hook (lambda ()
+			     (setq flycheck-gcc-language-standard "c++11")))
   (add-hook 'c-mode-hook (lambda () (setq flycheck-checker 'c/c++-gcc)))
-  (add-hook 'c-mode-hook (lambda () (setq flycheck-gcc-language-standard "gnu99")))
-  )
+  (add-hook 'c-mode-hook (lambda ()
+			   (setq flycheck-gcc-language-standard "gnu99"))))
 
+;; flycheck-pkg-config - configure flycheck using pkg-config header directories
 (use-package flycheck-pkg-config
   :ensure t)
+
+;; flycheck-inline - show error messages inline
+(use-package flycheck-inline
+  :ensure t
+  :config
+  (add-hook 'flycheck-mode-hook #'flycheck-inline-mode))
 
 ;; Flycheck-irony
 (use-package flycheck-irony
@@ -99,7 +114,7 @@
   :config
   (add-hook 'flycheck-mode-hook #'flycheck-irony-setup))
 
-;; Yasnippet
+;; yasnippet
 (use-package yasnippet
   :ensure t
   :config
@@ -112,7 +127,7 @@
   :config
   (add-to-list 'auto-mode-alist '("\\.rs\\'" . rust-mode)))
 
-;; markdown
+;; flymd - view markdown pages live
 (use-package flymd
   :ensure t)
 
@@ -134,8 +149,8 @@
   (setq spaceline-highlight-face-func 'spaceline-highlight-face-modified)
   (setq spaceline-separator-dir-left '(left . left)
 	spaceline-separator-dir-right '(right . right))
-  (set-face-attribute 'spaceline-unmodified nil :background "#ed9442") ; LightSkyBlue
-  (set-face-attribute 'spaceline-modified nil :background "#ef6034")) ; #f7e165
+  (set-face-attribute 'spaceline-unmodified nil :background "#ed9442")
+  (set-face-attribute 'spaceline-modified nil :background "#ef6034"))
 
 ;; diminish - hide minor modes from modeline
 (use-package diminish
@@ -164,7 +179,7 @@
   :config
   (global-diff-hl-mode t))
 
-;; Make emacs agree with shell on mac
+;; exec-path-from-shell - import environment variables from shell
 (use-package exec-path-from-shell
   :ensure t
   :config
@@ -183,44 +198,51 @@
   (add-hook 'emacs-lisp-mode-hook 'rainbow-delimiters-mode))
 
 ;; RTags (for cmake ide), needs external daemon
-;; (use-package rtags
-;;   :ensure t
-;;   :config
-;;   (progn
-;;     (setq rtags-path "/usr/local/bin/")
-;;     (setq rtags-autostart-diagnostics t)
-;;     (setq rtags-completions-enabled t)
-;;     (rtags-enable-standard-keybindings)
-;;     (push 'company-rtags company-backends)
-;;     (add-hook 'c-mode-hook 'rtags-start-process-unless-running)
-;;     (add-hook 'c++-mode-hook 'rtags-start-process-unless-running)
-;;     (add-hook 'objc-mode-hook 'rtags-start-process-unless-running)
-;;     (define-key c-mode-base-map (kbd "M-.") (function rtags-find-symbol-at-point))
-;;     (define-key c-mode-base-map (kbd "M-,") (function rtags-find-references-at-point))
-;;     (define-key c-mode-base-map (kbd "M-(") (function rtags-location-stack-back))
-;;     (define-key c-mode-base-map (kbd "M-)") (function rtags-find-symbol-at-point))
-;;     (define-key c-mode-base-map (kbd "<C-tab>") (function company-complete))))
+(use-package rtags
+  :ensure t
+  :config
+  (progn
+    (setq rtags-path "/usr/local/bin/")
+    (setq rtags-autostart-diagnostics t)
+    (setq rtags-completions-enabled t)
+    (rtags-enable-standard-keybindings)
+    (push 'company-rtags company-backends)
+    (add-hook 'c-mode-hook 'rtags-start-process-unless-running)
+    (add-hook 'c++-mode-hook 'rtags-start-process-unless-running)
+    (add-hook 'objc-mode-hook 'rtags-start-process-unless-running)
+    (define-key c-mode-base-map (kbd "M-.")
+      (function rtags-find-symbol-at-point))
+    (define-key c-mode-base-map (kbd "M-,")
+      (function rtags-find-references-at-point))
+    (define-key c-mode-base-map (kbd "M-(")
+      (function rtags-location-stack-back))
+    (define-key c-mode-base-map (kbd "M-)")
+      (function rtags-find-symbol-at-point))
+    (define-key c-mode-base-map (kbd "<C-tab>")
+      (function company-complete))))
 
-;; ;; Flycheck-rtags
-;; (use-package flycheck-rtags
-;;  :ensure t)
+;; Flycheck-rtags
+(use-package flycheck-rtags
+ :ensure t)
 
-;; ;; cmake-ide
-;; (use-package cmake-ide
-;;  :ensure t
-;;  :config
-;;  (progn
-;;    (require 'rtags)
-;;    (cmake-ide-setup)))
+;; cmake-ide
+(use-package cmake-ide
+ :ensure t
+ :config
+ (progn
+   (require 'rtags)
+   (cmake-ide-setup)))
 
 ;; modern-cpp-font-lock for modern c++ highlighting
 (use-package modern-cpp-font-lock
   :ensure t)
 
-;; electric-pair
+;; electric-pair - automatically close brackets
 (add-hook 'c-mode-hook 'electric-pair-mode)
 (add-hook 'c++-mode-hook 'electric-pair-mode)
 (add-hook 'python-mode-hook 'electric-pair-mode)
+(add-hook 'rust-mode-hook 'electric-pair-mode)
+(add-hook 'web-mode-hook 'electric-pair-mode)
 
 ;; 4 space indent in ccmodes
 (setq c-basic-offset 4)
@@ -287,21 +309,34 @@
   (global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
   (global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this))
 
+;; web-mode for editing html/css and inline/internal javascript/php, etc
+(use-package web-mode
+  :ensure t
+  :config
+  (add-to-list 'auto-mode-alist '("\\.html\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.css\\'" . web-mode)))
+
 ;; emmet - snippets for html
 (use-package emmet-mode
   :ensure t
   :config
-  (add-hook 'html-mode-hook #'emmet-mode))
+  (add-hook 'web-mode-hook #'emmet-mode))
 
 ;; fancy-battery - display battery status in modeline
-(use-package fancy-battery
-  :ensure t
-  :config
-  (add-hook 'after-init-hook #'fancy-battery-mode))
-  ;; (setq fancy-battery-show-percentage t))
+;; (use-package fancy-battery
+;;   :ensure t
+;;   :config
+;;   (add-hook 'after-init-hook #'fancy-battery-mode))
+
+;; stickyfunc-enhance - show function name that was scrolled past - annoying random freezes
+;; (use-package stickyfunc-enhance
+;;   :ensure t
+;;   :config
+;;   (add-to-list 'semantic-default-submodes 'global-semantic-stickyfunc-mode)
+;;   (semantic-mode 1))
 
 ;; Misc
-(set-face-attribute 'default nil :font "hack-13")
+(set-face-attribute 'default nil :font "hack-11")
 (set-face-attribute 'region nil :background "#d6972b" :foreground "#ffffff")
 (scroll-bar-mode -1)
 (global-display-line-numbers-mode)
@@ -316,8 +351,14 @@
 	  (lambda()(define-key eww-mode-map (kbd "M-c") 'eww-toggle-colors)))
 (global-set-key (kbd "C-t") (lookup-key global-map (kbd "C-x 5")))
 (global-set-key (kbd "s-u") 'revert-buffer)
+(show-paren-mode 1)
+(setq show-paren-delay 0)		;remove the default delay
+(set-face-background 'show-paren-match (face-background 'default))
+(set-face-foreground 'show-paren-match "#def")
+(set-face-attribute 'show-paren-match nil :weight 'extra-bold)
 
-;; Open schedule in org-mode
+;; Open schedule in org-mode and add it to org-agenda-files
+(setq org-agenda-files (list "~/.schedule"))
 (add-to-list 'auto-mode-alist '("\\.schedule\\'" . org-mode))
 
 ;; flash the modeline instead of bell
@@ -347,8 +388,7 @@
 (defun ag ()
   "Open `org-agenda'."
   (interactive)
-  (org-agenda)
-  )
+  (org-agenda))
 
 ;; toggle an inferior shell
 (defun my-toggle-inferior-shell ()
@@ -381,7 +421,7 @@
 			 'comint-postoutput-scroll-to-bottom)))
 
 ;; for server mode, use the same font
-(add-to-list 'default-frame-alist '(font . "hack-13"))
+(add-to-list 'default-frame-alist '(font . "hack-11"))
 (add-to-list 'default-frame-alist '(scroll-bar-mode -1))
 
 ;; TRAMP
@@ -394,31 +434,12 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(TeX-view-program-list
-   (quote
-    (("Emacs"
-      ("emacsclient -e '(with-current-buffer (buffer-name) (find-file-other-window \"%o\"))'")
-      "emacsclient"))))
- '(TeX-view-program-selection
-   (quote
-    (((output-pdf has-no-display-manager)
-      "dvi2tty")
-     ((output-dvi style-pstricks)
-      "dvips and gv")
-     (output-pdf "Emacs")
-     (output-dvi "PDF Tools")
-     (output-html "xdg-open"))))
- '(custom-safe-themes
-   (quote
-    ("3cd4f09a44fe31e6dd65af9eb1f10dc00d5c2f1db31a427713a1784d7db7fdfc" default)))
- '(org-agenda-files (quote ("~/.schedule")))
  '(package-selected-packages
    (quote
-    (emmet-mode multiple-cursors flycheck-pkg-config auctex fancy-battery yasnippet-snippets which-key use-package try treemacs-projectile treemacs-magit treemacs-icons-dired spaceline-all-the-icons rust-mode rainbow-delimiters org-bullets multi-term monokai-theme modern-cpp-font-lock gruvbox-theme flymd flycheck-rtags flycheck-irony exotica-theme exec-path-from-shell doom-themes diff-hl counsel-etags company-jedi company-irony company-c-headers cmake-mode cmake-ide clang-format))))
+    (company-rtags yasnippet-snippets which-key web-mode use-package try treemacs-projectile treemacs-magit treemacs-icons-dired stickyfunc-enhance spaceline-all-the-icons rust-mode rainbow-delimiters org-bullets multiple-cursors multi-term monokai-theme modern-cpp-font-lock gruvbox-theme flymd flycheck-rtags flycheck-pkg-config flycheck-irony flycheck-inline fancy-battery exotica-theme exec-path-from-shell emmet-mode doom-themes diminish diff-hl counsel-etags company-jedi company-irony company-c-headers cmake-mode cmake-ide clang-format badger-theme auctex))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
-(put 'upcase-region 'disabled nil)
