@@ -94,9 +94,13 @@
   (add-hook 'c++-mode-hook (lambda () (setq flycheck-checker 'c/c++-gcc)))
   (add-hook 'c++-mode-hook (lambda ()
 			     (setq flycheck-gcc-language-standard "c++11")))
+  (add-hook 'c++-mode-hook (lambda ()
+			     (setq flycheck-c/c++-gcc-executable "/usr/bin/g++")))
   (add-hook 'c-mode-hook (lambda () (setq flycheck-checker 'c/c++-gcc)))
   (add-hook 'c-mode-hook (lambda ()
-			   (setq flycheck-gcc-language-standard "gnu99"))))
+			   (setq flycheck-gcc-language-standard "gnu99")))
+  (add-hook 'c-mode-hook (lambda ()
+			   (setq flycheck-c/c++-gcc-executable "/usr/bin/gcc"))))
 
 ;; flycheck-pkg-config - configure flycheck using pkg-config header directories
 (use-package flycheck-pkg-config
@@ -136,10 +140,15 @@
   :ensure t)
 
 ;; Theme
-(use-package cyberpunk-theme ; nyx-theme badger-theme
+;; List of favourites (ranked top to bottom):
+;  - dracula-theme
+;  - cyberpunk-theme
+;  - badger-theme
+;  - nyx-theme
+(use-package dracula-theme
   :ensure t
   :config
-  (load-theme 'cyberpunk t))
+  (load-theme 'dracula t))
 
 ; spaceline modeline
 (use-package spaceline
@@ -436,7 +445,7 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (company-rtags yasnippet-snippets which-key web-mode use-package try treemacs-projectile treemacs-magit treemacs-icons-dired stickyfunc-enhance spaceline-all-the-icons rust-mode rainbow-delimiters org-bullets multiple-cursors multi-term monokai-theme modern-cpp-font-lock gruvbox-theme flymd flycheck-rtags flycheck-pkg-config flycheck-irony flycheck-inline fancy-battery exotica-theme exec-path-from-shell emmet-mode doom-themes diminish diff-hl counsel-etags company-jedi company-irony company-c-headers cmake-mode cmake-ide clang-format badger-theme auctex))))
+    (naysayer-theme company-rtags yasnippet-snippets which-key web-mode use-package try treemacs-projectile treemacs-magit treemacs-icons-dired stickyfunc-enhance spaceline-all-the-icons rust-mode rainbow-delimiters org-bullets multiple-cursors multi-term monokai-theme modern-cpp-font-lock gruvbox-theme flymd flycheck-rtags flycheck-pkg-config flycheck-irony flycheck-inline fancy-battery exotica-theme exec-path-from-shell emmet-mode doom-themes diminish diff-hl counsel-etags company-jedi company-irony company-c-headers cmake-mode cmake-ide clang-format badger-theme auctex))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
