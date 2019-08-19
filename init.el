@@ -136,10 +136,10 @@
   :ensure t)
 
 ;; Theme
-(use-package badger-theme ; nyx-theme
+(use-package cyberpunk-theme ; nyx-theme badger-theme
   :ensure t
   :config
-  (load-theme 'badger t))
+  (load-theme 'cyberpunk t))
 
 ; spaceline modeline
 (use-package spaceline
