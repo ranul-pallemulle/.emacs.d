@@ -32,18 +32,18 @@
 (use-package org-bullets
   :ensure t
   :config
-  (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
-(add-hook 'org-mode-hook '(lambda () (setq fill-column 65)))
-(add-hook 'org-mode-hook 'turn-on-auto-fill)
-;; Make windmove work in org-mode:
-(setq org-disputed-keys '(([(shift up)] . [(meta up)])
+  (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
+  (add-hook 'org-mode-hook (lambda () (setq fill-column 65)))
+  (add-hook 'org-mode-hook 'turn-on-auto-fill)
+  (add-hook 'org-mode-hook (lambda () (setq org-disputed-keys '(
+			 ([(shift up)] . [(meta up)])
                          ([(shift down)] . [(meta down)])
                          ([(shift left)] . [(meta left)])
                          ([(shift right)] . [(meta right)])
                          ([(meta return)] . [(control meta return)])
                          ([(control shift right)] . [(meta shift +)])
-                         ([(control shift left)] . [(meta shift -)])))
-(setq org-replace-disputed-keys t)
+                         ([(control shift left)] . [(meta shift -)])))))
+  (add-hook 'org-mode-hook (lambda () (setq org-replace-disputed-keys t))))
 
 ;; Irony mode
 (use-package irony
@@ -58,7 +58,6 @@
   :ensure t
   :config
   (add-hook 'after-init-hook 'global-company-mode)
-;prevent auto lowercasing of completions
   (add-hook 'org-mode-hook
 	    (lambda () (setq-local company-dabbrev-downcase nil))))
 
@@ -78,14 +77,6 @@
   :config
   (add-to-list 'company-backends 'company-c-headers))
 
-;; Python autocompletion
-(use-package company-jedi
-  :ensure t
-  :config
-  (defun jedi-python-mode-hook ()
-    (add-to-list 'company-backends 'company-jedi))
-  (add-hook 'python-mode-hook 'jedi-python-mode-hook))
-
 ;; flycheck
 (use-package flycheck
   :ensure t
@@ -102,7 +93,7 @@
   (add-hook 'c-mode-hook (lambda ()
 			   (setq flycheck-c/c++-gcc-executable "/usr/bin/gcc"))))
 
-;; flycheck-pkg-config - configure flycheck using pkg-config header directories
+;; flycheck-pkg-config - configure flycheck header directories using pkg-config
 (use-package flycheck-pkg-config
   :ensure t)
 
@@ -117,94 +108,6 @@
   :ensure t
   :config
   (add-hook 'flycheck-mode-hook #'flycheck-irony-setup))
-
-;; yasnippet
-(use-package yasnippet
-  :ensure t
-  :config
-  (yas-global-mode 1))
-(use-package yasnippet-snippets)
-
-;; Rust
-(use-package rust-mode
-  :ensure t
-  :config
-  (add-to-list 'auto-mode-alist '("\\.rs\\'" . rust-mode)))
-
-;; flymd - view markdown pages live
-(use-package flymd
-  :ensure t)
-
-;; all-the-icons
-(use-package all-the-icons
-  :ensure t)
-
-;; Theme
-;; List of favourites (ranked top to bottom):
-;  - dracula-theme
-;  - cyberpunk-theme
-;  - badger-theme
-;  - nyx-theme
-(use-package dracula-theme
-  :ensure t
-  :config
-  (load-theme 'dracula t))
-
-; spaceline modeline
-(use-package spaceline
-  :ensure t
-  :config
-  (spaceline-emacs-theme)
-  (setq spaceline-highlight-face-func 'spaceline-highlight-face-modified)
-  (setq spaceline-separator-dir-left '(left . left)
-	spaceline-separator-dir-right '(right . right))
-  (set-face-attribute 'spaceline-unmodified nil :background "#ed9442")
-  (set-face-attribute 'spaceline-modified nil :background "#ef6034"))
-
-;; diminish - hide minor modes from modeline
-(use-package diminish
-  :ensure t
-  :config
-  (diminish 'yas-minor-mode)
-  (diminish 'flycheck-mode)
-  (diminish 'company-mode)
-  (diminish 'which-key-mode)
-  (diminish 'eldoc-mode)
-  (diminish 'irony-mode)
-  (diminish 'abbrev-mode)
-  (diminish 'auto-fill-function)
-  (diminish 'auto-revert-mode)
-  (diminish 'magit-auto-revert-mode)
-  )
-
-;; Magit
-(use-package magit
-  :ensure t
-  :bind (("C-x g" . magit-status)))
-
-;; diff-hl - for highlighting uncommited changes
-(use-package diff-hl
-  :ensure t
-  :config
-  (global-diff-hl-mode t))
-
-;; exec-path-from-shell - import environment variables from shell
-(use-package exec-path-from-shell
-  :ensure t
-  :config
-  (exec-path-from-shell-copy-env "C_INCLUDE_PATH")
-  (exec-path-from-shell-copy-env "CPLUS_INCLUDE_PATH")
-  (exec-path-from-shell-copy-env "LD_LIBRARY_PATH")
-  (exec-path-from-shell-copy-env "PKG_CONFIG_PATH")
-  (exec-path-from-shell-initialize))
-
-;; rainbow-delimiters
-(use-package rainbow-delimiters
-  :ensure t
-  :config
-  (add-hook 'c-mode-common-hook 'rainbow-delimiters-mode)
-  (add-hook 'python-mode-hook 'rainbow-delimiters-mode)
-  (add-hook 'emacs-lisp-mode-hook 'rainbow-delimiters-mode))
 
 ;; RTags (for cmake ide), needs external daemon
 (use-package rtags
@@ -246,15 +149,108 @@
 (use-package modern-cpp-font-lock
   :ensure t)
 
-;; electric-pair - automatically close brackets
-(add-hook 'c-mode-hook 'electric-pair-mode)
-(add-hook 'c++-mode-hook 'electric-pair-mode)
-(add-hook 'python-mode-hook 'electric-pair-mode)
-(add-hook 'rust-mode-hook 'electric-pair-mode)
-(add-hook 'web-mode-hook 'electric-pair-mode)
-
 ;; 4 space indent in ccmodes
 (setq c-basic-offset 4)
+
+;; auto fill mode on C/C++/ObjC
+(add-hook 'c-mode-common-hook 'auto-fill-mode)
+
+;; quick compile
+(with-eval-after-load 'ccmode
+(define-key c-mode-base-map (kbd "M-c") 'compile))
+
+;; Python autocompletion
+(use-package company-jedi
+  :ensure t
+  :config
+  (defun jedi-python-mode-hook ()
+    (add-to-list 'company-backends 'company-jedi))
+  (add-hook 'python-mode-hook 'jedi-python-mode-hook))
+
+;; yasnippet
+(use-package yasnippet
+  :ensure t
+  :config
+  (yas-global-mode 1))
+(use-package yasnippet-snippets)
+
+;; Rust
+(use-package rust-mode
+  :ensure t
+  :config
+  (add-to-list 'auto-mode-alist '("\\.rs\\'" . rust-mode)))
+
+;; flymd - view markdown pages live
+(use-package flymd
+  :ensure t)
+
+;; all-the-icons
+(use-package all-the-icons
+  :ensure t)
+
+;; Theme
+(use-package badger-theme
+  :ensure t
+  :config
+  (load-theme 'badger t))
+
+; spaceline modeline
+(use-package spaceline
+  :ensure t
+  :config
+  (spaceline-emacs-theme)
+  (setq spaceline-highlight-face-func 'spaceline-highlight-face-modified)
+  (setq spaceline-separator-dir-left '(left . left)
+	spaceline-separator-dir-right '(right . right))
+  (set-face-attribute 'spaceline-unmodified nil :background "#ed9442")
+  (set-face-attribute 'spaceline-modified nil :background "#ef6034"))
+
+;; diminish - hide minor modes from modeline
+(use-package diminish
+  :ensure t
+  :config
+  (diminish 'yas-minor-mode)
+  (diminish 'flycheck-mode)
+  (diminish 'company-mode)
+  (diminish 'which-key-mode)
+  (diminish 'eldoc-mode)
+  (diminish 'irony-mode)
+  (diminish 'abbrev-mode)
+  (diminish 'auto-fill-function)
+  (diminish 'auto-revert-mode)
+  (diminish 'magit-auto-revert-mode))
+
+;; Magit
+(use-package magit
+  :ensure t
+  :bind (("C-x g" . magit-status)))
+
+;; diff-hl - for highlighting uncommited changes
+(use-package diff-hl
+  :ensure t
+  :config
+  (global-diff-hl-mode t))
+
+;; exec-path-from-shell - import environment variables from shell
+(use-package exec-path-from-shell
+  :ensure t
+  :config
+  (exec-path-from-shell-copy-env "C_INCLUDE_PATH")
+  (exec-path-from-shell-copy-env "CPLUS_INCLUDE_PATH")
+  (exec-path-from-shell-copy-env "LD_LIBRARY_PATH")
+  (exec-path-from-shell-copy-env "PKG_CONFIG_PATH")
+  (exec-path-from-shell-initialize))
+
+;; rainbow-delimiters
+(use-package rainbow-delimiters
+  :ensure t
+  :config
+  (add-hook 'c-mode-common-hook 'rainbow-delimiters-mode)
+  (add-hook 'python-mode-hook 'rainbow-delimiters-mode)
+  (add-hook 'emacs-lisp-mode-hook 'rainbow-delimiters-mode))
+
+;; electric-pair - automatically close brackets
+(electric-pair-mode t)
 
 ;; windmove
 (windmove-default-keybindings) ;; use shift keys
@@ -331,37 +327,23 @@
   :config
   (add-hook 'web-mode-hook #'emmet-mode))
 
-;; fancy-battery - display battery status in modeline
-;; (use-package fancy-battery
-;;   :ensure t
-;;   :config
-;;   (add-hook 'after-init-hook #'fancy-battery-mode))
-
-;; stickyfunc-enhance - show function name that was scrolled past - annoying random freezes
-;; (use-package stickyfunc-enhance
-;;   :ensure t
-;;   :config
-;;   (add-to-list 'semantic-default-submodes 'global-semantic-stickyfunc-mode)
-;;   (semantic-mode 1))
-
 ;; Misc
-(set-face-attribute 'default nil :font "hack-11")
-(set-face-attribute 'region nil :background "#d6972b" :foreground "#ffffff")
 (scroll-bar-mode -1)
+(column-number-mode t)
+(menu-bar-mode -1)
 (global-display-line-numbers-mode)
 (display-time-mode t)
 (setq display-time-default-load-average nil)
+(show-paren-mode 1)
+(setq show-paren-delay 0)		;remove the default delay
 (add-hook 'org-mode-hook (lambda() (display-line-numbers-mode -1)))
 (add-hook 'doc-view-mode-hook (lambda() (display-line-numbers-mode -1)))
-(column-number-mode t)
-(add-hook 'c-mode-common-hook 'auto-fill-mode)
-(menu-bar-mode -1)
 (add-hook 'eww-mode-hook
 	  (lambda()(define-key eww-mode-map (kbd "M-c") 'eww-toggle-colors)))
 (global-set-key (kbd "C-t") (lookup-key global-map (kbd "C-x 5")))
 (global-set-key (kbd "s-u") 'revert-buffer)
-(show-paren-mode 1)
-(setq show-paren-delay 0)		;remove the default delay
+(set-face-attribute 'default nil :font "hack-11")
+(set-face-attribute 'region nil :background "#d6972b" :foreground "#ffffff")
 (set-face-background 'show-paren-match (face-background 'default))
 (set-face-foreground 'show-paren-match "#def")
 (set-face-attribute 'show-paren-match nil :weight 'extra-bold)
@@ -415,13 +397,8 @@
     (progn
       (window-configuration-to-register ?j)
       (shell)
-      ))
-  )
+      )))
 (global-set-key (kbd "C-`") 'my-toggle-inferior-shell)
-
-;; quick compile
-(with-eval-after-load 'ccmode
-(define-key c-mode-base-map (kbd "M-c") 'compile))
 
 ;; prevent shell scroll back after clearing screen (C-l C-l)
 (add-hook 'comint-mode-hook
@@ -438,17 +415,3 @@
 
 (provide 'init)
 ;;; init.el ends here
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(package-selected-packages
-   (quote
-    (naysayer-theme company-rtags yasnippet-snippets which-key web-mode use-package try treemacs-projectile treemacs-magit treemacs-icons-dired stickyfunc-enhance spaceline-all-the-icons rust-mode rainbow-delimiters org-bullets multiple-cursors multi-term monokai-theme modern-cpp-font-lock gruvbox-theme flymd flycheck-rtags flycheck-pkg-config flycheck-irony flycheck-inline fancy-battery exotica-theme exec-path-from-shell emmet-mode doom-themes diminish diff-hl counsel-etags company-jedi company-irony company-c-headers cmake-mode cmake-ide clang-format badger-theme auctex))))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
