@@ -159,13 +159,13 @@
 (with-eval-after-load 'ccmode
 (define-key c-mode-base-map (kbd "M-c") 'compile))
 
-;; Python autocompletion
-(use-package company-jedi
+;; Python configuration (need pip install jedi rope flake8 autopep8 yapf black)
+(use-package elpy
   :ensure t
-  :config
-  (defun jedi-python-mode-hook ()
-    (add-to-list 'company-backends 'company-jedi))
-  (add-hook 'python-mode-hook 'jedi-python-mode-hook))
+  :init
+  (elpy-enable))
+
+(add-hook 'python-mode-hook 'auto-fill-mode)
 
 ;; yasnippet
 (use-package yasnippet
@@ -189,10 +189,10 @@
   :ensure t)
 
 ;; Theme
-(use-package badger-theme
+(use-package cyberpunk-theme ;badger-theme
   :ensure t
   :config
-  (load-theme 'badger t))
+  (load-theme 'cyberpunk t))
 
 ; spaceline modeline
 (use-package spaceline
@@ -327,6 +327,14 @@
   :config
   (add-hook 'web-mode-hook #'emmet-mode))
 
+(use-package markdown-mode
+  :ensure t
+  :commands (markdown-mode gfm-mode)
+  :mode (("README\\.md\\'" . gfm-mode)
+	 ("\\.md\\'" . markdown-mode)
+	 ("\\.markdown\\'" . markdown-mode))
+  :init (setq markdown-command "multimarkdown"))
+
 ;; Misc
 (scroll-bar-mode -1)
 (column-number-mode t)
@@ -415,3 +423,18 @@
 
 (provide 'init)
 ;;; init.el ends here
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages
+   (quote
+    (elpy yasnippet-snippets which-key web-mode use-package try treemacs-projectile treemacs-magit treemacs-icons-dired stickyfunc-enhance spacemacs-theme spaceline-all-the-icons solarized-theme rust-mode rainbow-delimiters org-bullets nyx-theme naysayer-theme multiple-cursors multi-term monokai-theme modern-cpp-font-lock laguna-theme gruvbox-theme flymd flymake flycheck-rtags flycheck-pkg-config flycheck-irony flycheck-inline fancy-battery exotica-theme exec-path-from-shell emmet-mode dracula-theme doom-themes diminish diff-hl cyberpunk-theme cyberpunk-2019-theme cquery counsel-etags company-rtags company-jedi company-irony company-c-headers cmake-mode cmake-ide clang-format ccls badger-theme auctex ample-theme)))
+ '(safe-local-variable-values (quote ((setq flycheck-checker (quote c/c++-gcc))))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
