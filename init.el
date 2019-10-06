@@ -84,12 +84,12 @@
   (global-flycheck-mode t)
   (add-hook 'c++-mode-hook (lambda () (setq flycheck-checker 'c/c++-gcc)))
   (add-hook 'c++-mode-hook (lambda ()
-			     (setq flycheck-gcc-language-standard "c++11")))
+			     (setq flycheck-gcc-language-standard "c++14")))
   (add-hook 'c++-mode-hook (lambda ()
 			     (setq flycheck-c/c++-gcc-executable "/usr/bin/g++")))
   (add-hook 'c-mode-hook (lambda () (setq flycheck-checker 'c/c++-gcc)))
   (add-hook 'c-mode-hook (lambda ()
-			   (setq flycheck-gcc-language-standard "gnu99")))
+			   (setq flycheck-gcc-language-standard "gnu89")))
   (add-hook 'c-mode-hook (lambda ()
 			   (setq flycheck-c/c++-gcc-executable "/usr/bin/gcc"))))
 
@@ -155,9 +155,35 @@
 ;; auto fill mode on C/C++/ObjC
 (add-hook 'c-mode-common-hook 'auto-fill-mode)
 
-;; quick compile
-(with-eval-after-load 'ccmode
-(define-key c-mode-base-map (kbd "M-c") 'compile))
+;; default C compile command for quick compiling
+(defun c-compile ()
+  "Command for quickly compiling a single C source file."
+  (interactive)
+  (setq in (buffer-name))
+  (setq out (file-name-sans-extension in))
+  (setq quick-compile-command
+	(format-spec
+	 "gcc -std=gnu89 -Wall -Werror -Wextra -pedantic -o %a %b"
+	 (format-spec-make ?a out ?b in)))
+  (compile quick-compile-command))
+
+(with-eval-after-load 'cc-mode
+  (define-key c-mode-map (kbd "M-c") 'c-compile))
+
+;; default C++ compile command for quick compiling
+(defun c++-compile ()
+  "Command for quickly compiling a single C++ source file."
+  (interactive)
+  (setq in (buffer-name))
+  (setq out (file-name-sans-extension in))
+  (setq quick-compile-command
+	(format-spec
+	 "g++ -std=c++14 -Wall -Werror -Wextra -pedantic -o %a %b"
+	 (format-spec-make ?a out ?b in)))
+  (compile quick-compile-command))
+
+(with-eval-after-load 'cc-mode
+  (define-key c++-mode-map (kbd "M-c") 'c++-compile))
 
 ;; Python configuration (need pip install jedi rope flake8 autopep8 yapf black)
 (use-package elpy
@@ -189,10 +215,10 @@
   :ensure t)
 
 ;; Theme
-(use-package cyberpunk-theme ;badger-theme
+(use-package gruber-darker-theme ;badger-theme cyberpunk-theme
   :ensure t
   :config
-  (load-theme 'cyberpunk t))
+  (load-theme 'gruber-darker t))
 
 ; spaceline modeline
 (use-package spaceline
@@ -371,6 +397,15 @@
 ;; prevent audible bell
 (setq visible-bell 1)
 
+;; save backup (~) files elsewhere (not in same directory)
+(setq backup-directory-alist `(("." . "~/.saves")))
+(setq backup-by-copying t)		; copy instead of linking
+;; have more than one backup
+(setq delete-old-versions t
+      kept-new-versions 6
+      kept-old-versions 2
+      version-control t)
+
 ;; open init.el by "M-x init"
 (defun init ()
   "Edit the `user-init-file', in another window."
@@ -395,7 +430,6 @@
   (interactive)
   (if (get-buffer-window "*shell*")
       (progn
-	;(message "Hiding shell")
 	(unless (eq (current-buffer) (get-buffer "*shell*"))
 	  (other-window 1)
 	  )
@@ -406,7 +440,23 @@
       (window-configuration-to-register ?j)
       (shell)
       )))
-(global-set-key (kbd "C-`") 'my-toggle-inferior-shell)
+
+(defun my-toggle-inferior-shell-alt ()
+  "Toggle the inferior shell by closing and creating a new shell instance."
+  (interactive)
+  (if (get-buffer-window "*shell*")
+      (progn
+	(comint-send-eof)
+	(with-current-buffer "*shell*" (setq kill-buffer-query-functions nil))
+	(kill-buffer "*shell*")
+	(jump-to-register ?j))
+    (progn
+      (window-configuration-to-register ?j)
+      (shell)
+      )))
+
+;; (global-set-key (kbd "C-`") 'my-toggle-inferior-shell)
+(global-set-key (kbd "C-`") 'my-toggle-inferior-shell-alt)
 
 ;; prevent shell scroll back after clearing screen (C-l C-l)
 (add-hook 'comint-mode-hook
