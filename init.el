@@ -215,10 +215,15 @@
   :ensure t)
 
 ;; Theme
-(use-package gruber-darker-theme ;badger-theme cyberpunk-theme
+;; (use-package gruber-darker-theme ;badger-theme cyberpunk-theme
+;;   :ensure t
+;;   :config
+;;   (load-theme 'gruber-darker t))
+
+(use-package doom-themes
   :ensure t
   :config
-  (load-theme 'gruber-darker t))
+  (load-theme 'doom-sourcerer t))		;doom-nord doom-palenight
 
 ; spaceline modeline
 (use-package spaceline
@@ -228,7 +233,7 @@
   (setq spaceline-highlight-face-func 'spaceline-highlight-face-modified)
   (setq spaceline-separator-dir-left '(left . left)
 	spaceline-separator-dir-right '(right . right))
-  (set-face-attribute 'spaceline-unmodified nil :background "#ed9442")
+  (set-face-attribute 'spaceline-unmodified nil :background "#7e5acc")
   (set-face-attribute 'spaceline-modified nil :background "#ef6034"))
 
 ;; diminish - hide minor modes from modeline
@@ -340,6 +345,15 @@
   (global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
   (global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this))
 
+;; highlight-symbol - highlight occurrences of the current word
+(use-package highlight-symbol
+  :ensure t
+  :config
+  (global-set-key (kbd "M-h") 'highlight-symbol)
+  (add-hook 'c-mode-common-hook (lambda() (highlight-symbol-nav-mode t)))
+  (add-hook 'python-mode-hook (lambda() (highlight-symbol-nav-mode t)))
+  (add-hook 'emacs-lisp-mode-hook (lambda() (highlight-symbol-nav-mode t))))
+
 ;; web-mode for editing html/css and inline/internal javascript/php, etc
 (use-package web-mode
   :ensure t
@@ -369,14 +383,14 @@
 (display-time-mode t)
 (setq display-time-default-load-average nil)
 (show-paren-mode 1)
-(setq show-paren-delay 0)		;remove the default delay
+(setq show-paren-delay 0)
 (add-hook 'org-mode-hook (lambda() (display-line-numbers-mode -1)))
 (add-hook 'doc-view-mode-hook (lambda() (display-line-numbers-mode -1)))
 (add-hook 'eww-mode-hook
 	  (lambda()(define-key eww-mode-map (kbd "M-c") 'eww-toggle-colors)))
 (global-set-key (kbd "C-t") (lookup-key global-map (kbd "C-x 5")))
 (global-set-key (kbd "s-u") 'revert-buffer)
-(set-face-attribute 'default nil :font "hack-11")
+(set-face-attribute 'default nil :font "hack-12")
 (set-face-attribute 'region nil :background "#d6972b" :foreground "#ffffff")
 (set-face-background 'show-paren-match (face-background 'default))
 (set-face-foreground 'show-paren-match "#def")
@@ -464,8 +478,32 @@
 	    (remove-hook 'comint-output-filter-functions
 			 'comint-postoutput-scroll-to-bottom)))
 
+;; Transpose lines
+(defun move-line (n)
+  "Move the current line up or down by N lines."
+  (interactive "p")
+  (setq col (current-column))
+  (beginning-of-line) (setq start (point))
+  (end-of-line) (forward-char) (setq end (point))
+  (let ((line-text (delete-and-extract-region start end)))
+    (forward-line n)
+    (insert line-text)
+    ;; restore point to original column in moved line
+    (forward-line -1)
+    (forward-char col)))
+(defun move-line-up (n)
+  "Move the current line up by N lines."
+  (interactive "p")
+  (move-line (if (null n) -1 (- n))))
+(defun move-line-down (n)
+  "Move the current line down by N lines."
+  (interactive "p")
+  (move-line (if (null n) 1 n)))
+(global-set-key (kbd "M-<up>") 'move-line-up)
+(global-set-key (kbd "M-<down>") 'move-line-down)
+
 ;; for server mode, use the same font
-(add-to-list 'default-frame-alist '(font . "hack-11"))
+(add-to-list 'default-frame-alist '(font . "hack-12"))
 (add-to-list 'default-frame-alist '(scroll-bar-mode -1))
 
 ;; TRAMP
@@ -480,7 +518,7 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (elpy yasnippet-snippets which-key web-mode use-package try treemacs-projectile treemacs-magit treemacs-icons-dired stickyfunc-enhance spacemacs-theme spaceline-all-the-icons solarized-theme rust-mode rainbow-delimiters org-bullets nyx-theme naysayer-theme multiple-cursors multi-term monokai-theme modern-cpp-font-lock laguna-theme gruvbox-theme flymd flymake flycheck-rtags flycheck-pkg-config flycheck-irony flycheck-inline fancy-battery exotica-theme exec-path-from-shell emmet-mode dracula-theme doom-themes diminish diff-hl cyberpunk-theme cyberpunk-2019-theme cquery counsel-etags company-rtags company-jedi company-irony company-c-headers cmake-mode cmake-ide clang-format ccls badger-theme auctex ample-theme)))
+    (highlight-symbol elpy yasnippet-snippets which-key web-mode use-package try treemacs-projectile treemacs-magit treemacs-icons-dired stickyfunc-enhance spacemacs-theme spaceline-all-the-icons solarized-theme rust-mode rainbow-delimiters org-bullets nyx-theme naysayer-theme multiple-cursors multi-term monokai-theme modern-cpp-font-lock laguna-theme gruvbox-theme flymd flymake flycheck-rtags flycheck-pkg-config flycheck-irony flycheck-inline fancy-battery exotica-theme exec-path-from-shell emmet-mode dracula-theme doom-themes diminish diff-hl cyberpunk-theme cyberpunk-2019-theme cquery counsel-etags company-rtags company-jedi company-irony company-c-headers cmake-mode cmake-ide clang-format ccls badger-theme auctex ample-theme)))
  '(safe-local-variable-values (quote ((setq flycheck-checker (quote c/c++-gcc))))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
