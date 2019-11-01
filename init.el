@@ -84,17 +84,6 @@
   :config
   (load-theme 'doom-sourcerer t))
 
-; spaceline modeline
-(use-package spaceline
-  :ensure t
-  :config
-  (spaceline-emacs-theme)
-  (setq spaceline-highlight-face-func 'spaceline-highlight-face-modified)
-  (setq spaceline-separator-dir-left '(left . left)
-	spaceline-separator-dir-right '(right . right))
-  (set-face-attribute 'spaceline-unmodified nil :background "#7e5acc")
-  (set-face-attribute 'spaceline-modified nil :background "#ef6034"))
-
 ;; diminish - hide minor modes from modeline
 (use-package diminish
   :ensure t
@@ -213,7 +202,7 @@
 (add-hook 'org-mode-hook (lambda() (display-line-numbers-mode -1)))
 (add-hook 'doc-view-mode-hook (lambda() (display-line-numbers-mode -1)))
 (global-set-key (kbd "C-t") (lookup-key global-map (kbd "C-x 5")))
-(set-face-attribute 'default nil :font "hack-12")
+(set-face-attribute 'default nil :font "hack-11")
 (set-face-attribute 'region nil :background "#d6972b" :foreground "#ffffff")
 (set-face-background 'show-paren-match (face-background 'default))
 (set-face-foreground 'show-paren-match "#def")
@@ -326,7 +315,7 @@
 (global-set-key (kbd "M-<down>") 'move-line-down)
 
 ;; for server mode, use the same font
-(add-to-list 'default-frame-alist '(font . "hack-12"))
+(add-to-list 'default-frame-alist '(font . "hack-11"))
 (add-to-list 'default-frame-alist '(scroll-bar-mode -1))
 
 ;; TRAMP
