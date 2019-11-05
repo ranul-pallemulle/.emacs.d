@@ -71,7 +71,6 @@
   :init (setq markdown-command "multimarkdown"))
 
 ;; Org mode
-(add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
 (add-hook 'org-mode-hook (lambda () (setq fill-column 65)))
 (add-hook 'org-mode-hook 'turn-on-auto-fill)
 
@@ -102,12 +101,19 @@
   :ensure t
   :config
   (global-set-key [C-M-tab] 'clang-format-region))
-(global-set-key (kbd "ł") 'windmove-up)
-(global-set-key (kbd "ß") 'windmove-down)
-(global-set-key (kbd "æ") 'windmove-left)
-(global-set-key (kbd "ð") 'windmove-right)
-(global-set-key (kbd "đ") 'forward-word)
-(global-set-key (kbd "”") 'backward-word)
+(if (eq system-type 'darwin)
+    (progn (global-set-key (kbd "s-w") 'windmove-up)
+	   (global-set-key (kbd "s-s") 'windmove-down)
+	   (global-set-key (kbd "s-a") 'windmove-left)
+	   (global-set-key (kbd "s-d") 'windmove-right)
+	   (global-set-key (kbd "s-f") 'forward-word)
+	   (global-set-key (kbd "s-b") 'backward-word))
+  (progn (global-set-key (kbd "ł") 'windmove-up)
+	 (global-set-key (kbd "ß") 'windmove-down)
+	 (global-set-key (kbd "æ") 'windmove-left)
+	 (global-set-key (kbd "ð") 'windmove-right)
+	 (global-set-key (kbd "đ") 'forward-word)
+	 (global-set-key (kbd "”") 'backward-word)))
 (add-to-list 'load-path "~/.emacs.d/framemove/")
 (require 'framemove)
 (setq framemove-hook-into-windmove t)
@@ -121,9 +127,13 @@
 
 
 ;; Miscellaneous
-(set-face-attribute 'default nil :font "hack-11")
+(if (eq system-type 'darwin)
+    (progn (setq mac-option-modifier 'meta)
+	   (setq mac-right-command-modifier 'super)))
+(if (eq system-type 'darwin) (setq var-font "monaco-14") (setq var-font "hack-11"))
+(set-face-attribute 'default nil :font var-font)
 (set-face-attribute 'region nil :background "#d6972b" :foreground "#ffffff")
-(add-to-list 'default-frame-alist '(font . "hack-11"))
+(add-to-list 'default-frame-alist `(font . ,var-font))
 (electric-pair-mode t)
 (global-display-line-numbers-mode)
 (global-set-key (kbd "C-t") (lookup-key global-map (kbd "C-x 5")))
@@ -131,7 +141,7 @@
 (column-number-mode 1)
 (scroll-bar-mode -1)
 (tool-bar-mode -1)
-(menu-bar-mode -1)
+(unless (eq system-type 'darwin) (menu-bar-mode -1))
 (add-to-list 'default-frame-alist '(scroll-bar-mode -1))
 (setq ring-bell-function (lambda ()
 			   (let ((orig-fg (face-foreground 'mode-line)))
