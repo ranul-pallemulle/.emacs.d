@@ -31,8 +31,9 @@
 (use-package modern-cpp-font-lock
   :ensure t)
 
-;; 4 space indent in ccmodes
-(setq c-basic-offset 4)
+;; Use Allman style in cc-modes
+(setq c-default-style "bsd"
+      c-basic-offset 4)
 
 ;; auto fill mode on C/C++/ObjC
 (add-hook 'c-mode-common-hook 'auto-fill-mode)
@@ -62,7 +63,7 @@
   (setq out (file-name-sans-extension in))
   (setq quick-compile-command
 	(format-spec
-	 "g++ -std=c++14 -Wall -Werror -Wextra -pedantic -o %a %b"
+	 "g++ -std=c++17 -Wall -Werror -Wextra -pedantic -o %a %b"
 	 (format-spec-make ?a out ?b in)))
   (compile quick-compile-command))
 
@@ -96,7 +97,7 @@
   (diminish 'irony-mode)
   (diminish 'abbrev-mode)
   (diminish 'auto-fill-function)
-  (diminish 'auto-revert-mode)
+  (eval-after-load "auto-revert" '(diminish 'auto-revert-mode))
   (diminish 'magit-auto-revert-mode))
 
 ;; Magit
