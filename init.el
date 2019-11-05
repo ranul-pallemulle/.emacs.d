@@ -20,6 +20,39 @@
   :ensure t)
 (use-package cmake-mode
   :ensure t)
+(use-package irony
+  :ensure t
+  :config
+  (add-hook 'c-mode-common-hook 'irony-mode)
+  (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options))
+(use-package company
+  :ensure t
+  :config
+  (add-hook 'after-init-hook 'global-company-mode))
+(use-package company-irony
+  :ensure t
+  :config
+  (add-to-list 'company-backends 'company-irony))
+(use-package company-c-headers
+  :ensure t
+  :config
+  (add-to-list 'company-backends 'company-c-headers))
+(use-package flycheck
+  :ensure t
+  :config
+  (add-hook 'after-init-hook 'global-flycheck-mode)
+  (add-hook 'c++-mode-hook (lambda () (setq flycheck-checker 'c/c++-clang
+					    flycheck-clang-language-standard "c++17")))
+  (add-hook 'c-mode-hook (lambda () (setq flycheck-checker 'c/c++-clang
+					  flycheck-clang-language-standard "gnu89"))))
+(use-package flycheck-inline
+  :ensure t
+  :config
+  (add-hook 'flycheck-mode-hook #'flycheck-inline-mode))
+(use-package flycheck-irony
+  :ensure t
+  :config
+  (add-hook 'flycheck-mode-hook #'flycheck-irony-setup))
 (require 'format-spec)
 (defun c-compile ()
   (interactive)
@@ -42,6 +75,13 @@
 (with-eval-after-load 'cc-mode
   (define-key c-mode-map (kbd "M-c") 'c-compile)
   (define-key c++-mode-map (kbd "M-c") 'c++-compile))
+
+;; Python
+(use-package elpy
+  :ensure t
+  :init
+  (elpy-enable))
+(add-hook 'python-mode-hook 'turn-on-auto-fill)
 
 ;; Latex
 (use-package auctex
@@ -84,6 +124,12 @@
   :config
   (global-set-key (kbd "C->") 'mc/mark-next-like-this)
   (global-set-key (kbd "C-<") 'mc/mark-previous-like-this))
+(use-package yasnippet
+  :ensure t
+  :config
+  (yas-global-mode 1))
+(use-package yasnippet-snippets
+  :ensure t)
 (use-package diminish
   :ensure t
   :config
@@ -123,7 +169,7 @@
 (use-package doom-themes
   :ensure t
   :config
-  (load-theme 'doom-sourcerer t))
+  (load-theme 'doom-laserwave t))
 
 
 ;; Miscellaneous
