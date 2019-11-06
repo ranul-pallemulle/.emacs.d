@@ -96,8 +96,9 @@
 (use-package web-mode
   :ensure t
   :config
-  (add-to-list 'auto-mode-alist '("\\.html\\'" . web-mode))
-  (add-to-list 'auto-mode-alist '("\\.css\\'" . web-mode)))
+  (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.css?\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.js\\'" . web-mode)))
 (use-package emmet-mode
   :ensure t
   :config
@@ -109,6 +110,10 @@
 	 ("\\.md\\'" . markdown-mode)
 	 ("\\.markdown\\'" . markdown-mode))
   :init (setq markdown-command "multimarkdown"))
+(use-package company-web
+  :ensure t
+  :config
+  (add-to-list 'company-backends 'company-web-html))
 
 ;; Org mode
 (add-hook 'org-mode-hook (lambda () (setq fill-column 65)))
