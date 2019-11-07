@@ -279,30 +279,8 @@
 				(progn
 				  (display-line-numbers-mode -1)
 				  (auto-revert-mode t))))
-
-(defun push-windows-before-comp (orig-fun &rest args)
-  "Save window configuration before compiling.  ORIG-FUN ARGS."
-  (window-configuration-to-register :prior-to-compile)
-  (if (get-buffer "*compilation*")
-      (kill-buffer "*compilation*"))
-  (switch-to-buffer "*compilation*"))
-(advice-add 'compile :before #'push-windows-before-comp)
-(defun bury-compile-buffer-if-successful (buffer string)
- "Bury a compilation buffer if succeeded without warnings.  BUFFER STRING."
- (when (and
-         (buffer-live-p buffer)
-         (string-match "compilation" (buffer-name buffer))
-         (string-match "finished" string)
-         (not
-          (with-current-buffer buffer
-            (goto-char (point-min))
-            (search-forward "warning" nil t))))
-    (run-with-timer 0.5 nil
-                    (lambda (buf)
-		      (jump-to-register :prior-to-compile))
-                    buffer)))
-(add-hook 'compilation-finish-functions 'bury-compile-buffer-if-successful)
-
+(add-to-list 'same-window-buffer-names "*compilation*")
+(setq compilation-scroll-output 'first-error)
 
 (provide 'init)
 ;;; init.el ends here
