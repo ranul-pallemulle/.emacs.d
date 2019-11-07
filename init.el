@@ -11,34 +11,28 @@
 (unless (package-installed-p 'use-package)
   (package-refresh-contents)
   (package-install 'use-package))
+(setq use-package-always-ensure t)
 
 ;; C/C++/ObjC
 (setq c-default-style "bsd"
       c-basic-offset 4)
 (add-hook 'c-mode-common-hook 'turn-on-auto-fill)
-(use-package modern-cpp-font-lock
-  :ensure t)
-(use-package cmake-mode
-  :ensure t)
+(use-package modern-cpp-font-lock)
+(use-package cmake-mode)
 (use-package irony
-  :ensure t
   :config
   (add-hook 'c-mode-common-hook 'irony-mode)
   (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options))
 (use-package company
-  :ensure t
   :config
   (add-hook 'after-init-hook 'global-company-mode))
 (use-package company-irony
-  :ensure t
   :config
   (add-to-list 'company-backends 'company-irony))
 (use-package company-c-headers
-  :ensure t
   :config
   (add-to-list 'company-backends 'company-c-headers))
 (use-package flycheck
-  :ensure t
   :config
   (add-hook 'after-init-hook 'global-flycheck-mode)
   (add-hook 'c++-mode-hook (lambda () (setq flycheck-checker 'c/c++-clang
@@ -46,11 +40,9 @@
   (add-hook 'c-mode-hook (lambda () (setq flycheck-checker 'c/c++-clang
 					  flycheck-clang-language-standard "gnu89"))))
 (use-package flycheck-inline
-  :ensure t
   :config
   (add-hook 'flycheck-mode-hook #'flycheck-inline-mode))
 (use-package flycheck-irony
-  :ensure t
   :config
   (add-hook 'flycheck-mode-hook #'flycheck-irony-setup))
 (require 'format-spec)
@@ -78,14 +70,13 @@
 
 ;; Python
 (use-package elpy
-  :ensure t
   :init
   (elpy-enable))
 (add-hook 'python-mode-hook 'turn-on-auto-fill)
 
 ;; Latex
-(use-package auctex
-  :defer t
+(use-package tex
+  :ensure auctex
   :config
   (progn
     (setq TeX-auto-save t)
@@ -94,24 +85,19 @@
 
 ;; Web
 (use-package web-mode
-  :ensure t
   :config
   (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
-  (add-to-list 'auto-mode-alist '("\\.css?\\'" . web-mode))
-  (add-to-list 'auto-mode-alist '("\\.js\\'" . web-mode)))
+  (add-to-list 'auto-mode-alist '("\\.css?\\'" . web-mode)))
 (use-package emmet-mode
-  :ensure t
   :config
   (add-hook 'web-mode-hook #'emmet-mode))
 (use-package markdown-mode
-  :ensure t
   :commands (markdown-mode gfm-mode)
   :mode (("README\\.md\\'" . gfm-mode)
 	 ("\\.md\\'" . markdown-mode)
 	 ("\\.markdown\\'" . markdown-mode))
   :init (setq markdown-command "multimarkdown"))
 (use-package company-web
-  :ensure t
   :config
   (add-to-list 'company-backends 'company-web-html))
 
@@ -122,21 +108,16 @@
 
 ;; Utility
 (use-package magit
-  :ensure t
   :bind (("C-x g" . magit-status)))
 (use-package multiple-cursors
-  :ensure t
   :config
   (global-set-key (kbd "C->") 'mc/mark-next-like-this)
   (global-set-key (kbd "C-<") 'mc/mark-previous-like-this))
 (use-package yasnippet
-  :ensure t
   :config
   (yas-global-mode 1))
-(use-package yasnippet-snippets
-  :ensure t)
+(use-package yasnippet-snippets)
 (use-package diminish
-  :ensure t
   :config
   (diminish 'yas-minor-mode)
   (diminish 'flycheck-mode)
@@ -149,9 +130,17 @@
   (eval-after-load "auto-revert" '(diminish 'auto-revert-mode))
   (diminish 'magit-auto-revert-mode))
 (use-package clang-format
-  :ensure t
   :config
   (global-set-key [C-M-tab] 'clang-format-region))
+(use-package projectile
+  :bind-keymap
+  ("s-p" . projectile-command-map)
+  :config
+  (setq projectile-project-search-path '("~/Documents"))
+  (projectile-discover-projects-in-search-path))
+(use-package which-key
+  :config
+  (which-key-mode t))
 (if (eq system-type 'darwin)
     (progn (global-set-key (kbd "s-w") 'windmove-up)
 	   (global-set-key (kbd "s-s") 'windmove-down)
@@ -190,6 +179,7 @@
 (global-set-key (kbd "C-t") (lookup-key global-map (kbd "C-x 5")))
 (show-paren-mode 1)
 (column-number-mode 1)
+(delete-selection-mode 1)
 (scroll-bar-mode -1)
 (tool-bar-mode -1)
 (unless (eq system-type 'darwin) (menu-bar-mode -1))
@@ -212,15 +202,19 @@
 (setq org-agenda-files (list "~/.schedule"))
 (add-to-list 'auto-mode-alist '("\\.schedule\\'" . org-mode))
 (defun init ()
+  "Open init.el."
   (interactive)
   (find-file user-init-file))
 (defun sched ()
+  "Open ~/.schedule."
   (interactive)
   (find-file "~/.schedule"))
 (defun ag ()
+  "Open 'org-mode' agenda."
   (interactive)
   (org-agenda))
 (defun toggle-inferior-shell ()
+  "Open inferior shell in current directory."
   (interactive)
   (if (get-buffer-window "*shell*")
       (progn
@@ -237,6 +231,7 @@
 	    (remove-hook 'comint-output-filter-functions
 			 'comint-postoutput-scroll-to-bottom)))
 (defun transpose-lines (n)
+  "Move current line N lines down."
   (interactive "p")
   (setq col (current-column))
   (beginning-of-line) (setq start (point))
@@ -247,13 +242,33 @@
     (forward-line -1)
     (forward-char col)))
 (defun move-line-up (n)
+  "Wrapper around 'transpose-lines' for moving current line N lines up."
   (interactive "p")
   (transpose-lines (if (null n) -1 (- n))))
 (defun move-line-down (n)
+  "Wrapper around 'transpose-lines' for moving current line N lines down."
   (interactive "p")
   (transpose-lines (if (null n) 1 n)))
 (global-set-key (kbd "M-p") 'move-line-up)
 (global-set-key (kbd "M-n") 'move-line-down)
+(defun newline-from-anywhere ()
+  "Create a new line and go to it regardless of current cursor column."
+  (interactive)
+  (end-of-line)
+  (newline-and-indent))
+(global-set-key (kbd "M-RET") 'newline-from-anywhere)
+(defun copy-line-down ()
+  "Replicate current line one line below while maintaining cursor column."
+  (interactive)
+  (let ((saved-col (current-column)))
+    (move-beginning-of-line 1)
+    (kill-line)
+    (yank)
+    (newline)
+    (yank)
+    (move-to-column saved-col)))
+(global-set-key (kbd "M-<down>") 'copy-line-down)
+
 (add-hook 'doc-view-mode-hook (lambda () (auto-revert-mode t)))
 (add-hook 'doc-view-mode-hook (lambda () (setq doc-view-continuous t)))
 (add-hook 'doc-view-mode-hook 'doc-view-fit-width-to-window)
