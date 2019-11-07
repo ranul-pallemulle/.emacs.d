@@ -82,6 +82,8 @@
     (setq TeX-auto-save t)
     (setq TeX-parse-self t)
     (setq-default TeX-master nil)))
+(defun my-latex-compile () (interactive) (compile "make -k"))
+(define-key TeX-mode-map (kbd "M-c") 'my-latex-compile)
 
 ;; Web
 (use-package web-mode
@@ -138,6 +140,7 @@
 (use-package projectile
   :bind-keymap
   ("s-p" . projectile-command-map)
+  ("C-c p" . projectile-command-map)
   :config
   (setq projectile-project-search-path '("~/Documents"))
   (projectile-discover-projects-in-search-path))
@@ -271,11 +274,21 @@
     (yank)
     (move-to-column saved-col)))
 (global-set-key (kbd "M-<down>") 'copy-line-down)
-
-(add-hook 'doc-view-mode-hook (lambda () (auto-revert-mode t)))
-(add-hook 'doc-view-mode-hook (lambda () (setq doc-view-continuous t)))
-(add-hook 'doc-view-mode-hook 'doc-view-fit-width-to-window)
-(add-hook 'doc-view-mode-hook (lambda () (display-line-numbers-mode -1)))
+(add-hook 'doc-view-mode-hook (lambda ()
+				(progn
+				  (display-line-numbers-mode -1)
+				  (auto-revert-mode t))))
+;; Close the compilation window if there was no error at all.
+(setq compilation-exit-message-function
+      (lambda (status code msg)
+	;; If M-x compile exists with a 0
+	(when (and (eq status 'exit) (zerop code))
+	  ;; then bury the *compilation* buffer, so that C-x b doesn't go there
+  	  (bury-buffer "*compilation*")
+  	  ;; and return to whatever were looking at before
+  	  (replace-buffer-in-windows "*compilation*"))
+	;; Always return the anticipated result of compilation-exit-message-function
+  	(cons msg code)))
 
 (provide 'init)
 ;;; init.el ends here
