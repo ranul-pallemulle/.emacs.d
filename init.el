@@ -13,6 +13,7 @@
   (package-install 'use-package))
 (setq use-package-always-ensure t)
 
+
 ;; C/C++/ObjC
 (setq c-default-style "bsd"
       c-basic-offset 4)
@@ -278,17 +279,30 @@
 				(progn
 				  (display-line-numbers-mode -1)
 				  (auto-revert-mode t))))
-;; Close the compilation window if there was no error at all.
-(setq compilation-exit-message-function
-      (lambda (status code msg)
-	;; If M-x compile exists with a 0
-	(when (and (eq status 'exit) (zerop code))
-	  ;; then bury the *compilation* buffer, so that C-x b doesn't go there
-  	  (bury-buffer "*compilation*")
-  	  ;; and return to whatever were looking at before
-  	  (replace-buffer-in-windows "*compilation*"))
-	;; Always return the anticipated result of compilation-exit-message-function
-  	(cons msg code)))
+
+(defun push-windows-before-comp (orig-fun &rest args)
+  "Save window configuration before compiling.  ORIG-FUN ARGS."
+  (window-configuration-to-register :prior-to-compile)
+  (if (get-buffer "*compilation*")
+      (kill-buffer "*compilation*"))
+  (switch-to-buffer "*compilation*"))
+(advice-add 'compile :before #'push-windows-before-comp)
+(defun bury-compile-buffer-if-successful (buffer string)
+ "Bury a compilation buffer if succeeded without warnings.  BUFFER STRING."
+ (when (and
+         (buffer-live-p buffer)
+         (string-match "compilation" (buffer-name buffer))
+         (string-match "finished" string)
+         (not
+          (with-current-buffer buffer
+            (goto-char (point-min))
+            (search-forward "warning" nil t))))
+    (run-with-timer 0.5 nil
+                    (lambda (buf)
+		      (jump-to-register :prior-to-compile))
+                    buffer)))
+(add-hook 'compilation-finish-functions 'bury-compile-buffer-if-successful)
+
 
 (provide 'init)
 ;;; init.el ends here
