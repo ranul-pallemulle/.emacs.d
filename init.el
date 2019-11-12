@@ -46,6 +46,30 @@
 (use-package flycheck-irony
   :config
   (add-hook 'flycheck-mode-hook #'flycheck-irony-setup))
+(use-package rmsbolt
+  :init
+  (setq rmsbolt-asm-format "att")
+  :config
+  (add-hook 'c++-mode-hook (lambda () (setq rmsbolt-command "g++ -std=c++17 -Og")))
+  (add-hook 'c-mode-hook (lambda () (setq rmsbolt-command "gcc -std=gnu89 -Og"))))
+(defun turn-on-rmsbolt ()
+  "Custon function for turning on rmsbolt."
+  (interactive)
+  (rmsbolt-mode 1)
+  (window-configuration-to-register :before-rmsbolt)
+  (rmsbolt-compile))
+(defun turn-off-rmsbolt ()
+  "Custom function for turning off rmsbolt."
+  (interactive)
+  (rmsbolt-mode -1)
+  (if (get-buffer "*compilation*")
+      (kill-buffer "*compilation*"))
+  (if (get-buffer "*rmsbolt-output*")
+      (kill-buffer "*rmsbolt-output*"))
+  (jump-to-register :before-rmsbolt))
+(with-eval-after-load 'cc-mode
+  (define-key c-mode-base-map (kbd "C-c a") `turn-on-rmsbolt)
+  (define-key c-mode-base-map (kbd "C-c q") 'turn-off-rmsbolt))
 (require 'format-spec)
 (defun c-compile ()
   (interactive)
@@ -274,7 +298,7 @@
     (newline)
     (yank)
     (move-to-column saved-col)))
-(global-set-key (kbd "M-<down>") 'copy-line-down)
+(global-set-key (kbd "M-N") 'copy-line-down)
 (add-hook 'doc-view-mode-hook (lambda ()
 				(progn
 				  (display-line-numbers-mode -1)
