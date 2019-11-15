@@ -50,8 +50,8 @@
   :init
   (setq rmsbolt-asm-format "att")
   :config
-  (add-hook 'c++-mode-hook (lambda () (setq rmsbolt-command "g++ -std=c++17 -Og")))
-  (add-hook 'c-mode-hook (lambda () (setq rmsbolt-command "gcc -std=gnu89 -Og"))))
+  (add-hook 'c++-mode-hook (lambda () (setq rmsbolt-command "g++ -std=c++17 -Og -fno-omit-frame-pointer")))
+  (add-hook 'c-mode-hook (lambda () (setq rmsbolt-command "gcc -std=gnu89 -Og -fno-omit-frame-pointer"))))
 (defun turn-on-rmsbolt ()
   "Custon function for turning on rmsbolt."
   (interactive)
@@ -91,7 +91,8 @@
   (compile quick-compile-command))
 (with-eval-after-load 'cc-mode
   (define-key c-mode-map (kbd "M-c") 'c-compile)
-  (define-key c++-mode-map (kbd "M-c") 'c++-compile))
+  (define-key c++-mode-map (kbd "M-c") 'c++-compile)
+  (define-key c++-mode-map (kbd "M-t") 'irony-get-type))
 
 ;; Python
 (use-package elpy
@@ -152,7 +153,7 @@
   (diminish 'yas-minor-mode)
   (diminish 'flycheck-mode)
   (diminish 'company-mode)
-  (diminish 'which-key-mode)
+  (eval-after-load "which-key" '(diminish 'which-key-mode))
   (diminish 'eldoc-mode)
   (diminish 'irony-mode)
   (diminish 'abbrev-mode)
@@ -194,7 +195,12 @@
 (use-package doom-themes
   :ensure t
   :config
-  (load-theme 'doom-laserwave t))
+  (load-theme 'doom-gruvbox t))
+(use-package spaceline
+  :init
+  (setq powerline-default-separator 'contour)
+  (spaceline-emacs-theme))
+
 
 
 ;; Miscellaneous
