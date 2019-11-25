@@ -50,8 +50,8 @@
   :init
   (setq rmsbolt-asm-format "att")
   :config
-  (add-hook 'c++-mode-hook (lambda () (setq rmsbolt-command "g++ -std=c++17 -Og -fno-omit-frame-pointer")))
-  (add-hook 'c-mode-hook (lambda () (setq rmsbolt-command "gcc -std=gnu89 -Og -fno-omit-frame-pointer"))))
+  (add-hook 'c++-mode-hook (lambda () (setq rmsbolt-command "g++ -std=c++17 -Og")))
+  (add-hook 'c-mode-hook (lambda () (setq rmsbolt-command "gcc -std=gnu89 -Og"))))
 (defun turn-on-rmsbolt ()
   "Custon function for turning on rmsbolt."
   (interactive)
@@ -100,6 +100,13 @@
   (elpy-enable))
 (add-hook 'python-mode-hook 'turn-on-auto-fill)
 
+;; C#, .NET
+(use-package omnisharp
+  :config
+  (add-to-list 'company-backends 'company-omnisharp)
+  (add-hook 'csharp-mode-hook #'flycheck-mode)
+  (add-hook 'csharp-mode-hook 'omnisharp-mode))
+
 ;; Latex
 (use-package tex
   :ensure auctex
@@ -114,8 +121,8 @@
 ;; Web
 (use-package web-mode
   :config
-  (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
-  (add-to-list 'auto-mode-alist '("\\.css?\\'" . web-mode)))
+  (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode)))
+  ;; (add-to-list 'auto-mode-alist '("\\.css?\\'" . web-mode)))
 (use-package js2-mode
   :config
   (add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode)))
