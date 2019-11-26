@@ -105,7 +105,8 @@
   :config
   (add-to-list 'company-backends 'company-omnisharp)
   (add-hook 'csharp-mode-hook #'flycheck-mode)
-  (add-hook 'csharp-mode-hook 'omnisharp-mode))
+  (add-hook 'csharp-mode-hook 'omnisharp-mode)
+  (add-to-list 'auto-mode-alist '("\\.cs\\'" . csharp-mode)))
 
 ;; Latex
 (use-package tex
@@ -121,8 +122,8 @@
 ;; Web
 (use-package web-mode
   :config
-  (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode)))
-  ;; (add-to-list 'auto-mode-alist '("\\.css?\\'" . web-mode)))
+  (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.css\\'" . web-mode)))
 (use-package js2-mode
   :config
   (add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode)))
@@ -202,7 +203,7 @@
 (use-package doom-themes
   :ensure t
   :config
-  (load-theme 'doom-gruvbox t))
+  (load-theme 'doom-laserwave t))
 (use-package spaceline
   :init
   (setq powerline-default-separator 'contour)
@@ -214,7 +215,7 @@
 (if (eq system-type 'darwin)
     (progn (setq mac-option-modifier 'meta)
 	   (setq mac-right-command-modifier 'super)))
-(if (eq system-type 'darwin) (setq var-font "monaco-14") (setq var-font "hack-11"))
+(if (eq system-type 'darwin) (setq var-font "monaco-15") (setq var-font "hack-11"))
 (set-face-attribute 'default nil :font var-font)
 (set-face-attribute 'region nil :background "#d6972b" :foreground "#ffffff")
 (add-to-list 'default-frame-alist `(font . ,var-font))
