@@ -203,7 +203,7 @@
 (use-package doom-themes
   :ensure t
   :config
-  (load-theme 'doom-laserwave t))
+  (load-theme 'doom-wilmersdorf t))
 (use-package spaceline
   :init
   (setq powerline-default-separator 'contour)
