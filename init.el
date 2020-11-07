@@ -12,7 +12,7 @@
   (package-refresh-contents)
   (package-install 'use-package))
 (setq use-package-always-ensure t)
-
+(setq byte-compile-warnings '(cl-functions))
 
 ;; C/C++/ObjC
 (setq c-default-style "bsd"
